@@ -196,13 +196,12 @@ export default {
       const beforePromise = new Date().getTime()
       const timer = location.href.includes('localhost') ? '1' : '3000'
       if (cache.has('lastSync')) {
-        if (cache.get('lastSync').lastSync !== (new Date().toLocaleDateString())) {
+        const lastSync = cache.get('lastSync').lastSync
+        if (lastSync !== (new Date().toLocaleDateString())) {
           vm.sync()
         }
       } else {
-        cache.set('lastSync', JSON.stringify({
-          lastSync: new Date().toLocaleDateString()
-        }))
+        cache.set('lastSync', { lastSync: new Date().toLocaleDateString() })
       }
       Promise.all([
         vm.requestClients(),
