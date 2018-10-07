@@ -17,3 +17,12 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+#firebaseignore
+.firebase
+.firebaserc
+database.rules.json
+firebase.json
+firestore.rules
+firestore.indexes.json
+/public

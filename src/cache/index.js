@@ -15,7 +15,12 @@ const has = (ref) => {
 }
 
 const delAll = () => {
-  localStorage.clear()
+  localStorage.removeItem('lastSync')
+  localStorage.removeItem('barbers')
+  localStorage.removeItem('clients')
+  localStorage.removeItem('payments')
+  localStorage.removeItem('schedules')
+  localStorage.removeItem('services')
 }
 
 export default {

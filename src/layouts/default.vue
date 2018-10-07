@@ -195,9 +195,14 @@ export default {
       const vm = this
       const beforePromise = new Date().getTime()
       const timer = location.href.includes('localhost') ? '1' : '3000'
-      const today = new Date().toLocaleDateString()
-      if (!cache.has(today)) {
-        vm.sync(today)
+      if (cache.has('lastSync')) {
+        if (cache.get('lastSync').lastSync !== (new Date().toLocaleDateString())) {
+          vm.sync()
+        }
+      } else {
+        cache.set('lastSync', JSON.stringify({
+          lastSync: new Date().toLocaleDateString()
+        }))
       }
       Promise.all([
         vm.requestClients(),
@@ -255,10 +260,8 @@ export default {
 
     sync (today) {
       cache.delAll()
-      cache.set(today, today)
-      setTimeout(() => {
-        location.reload()
-      }, 100)
+      this.loading = true
+      this.startApplication()
     },
 
     requestClients () {

@@ -22,14 +22,15 @@ const Router = new VueRouter({
 })
 
 Router.beforeEach((to, from, next) => {
+  const checkUser = localStorage.hasOwnProperty('user')
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!localStorage.hasOwnProperty('user')) {
-      next({ path: '/' })
-    } else {
+    if (checkUser) {
       next()
+    } else {
+      next({ path: '/' })
     }
-  } else if (to.path === '/' && localStorage.hasOwnProperty('user')) {
-    next({ path: '/' })
+  } else if (to.path === '/' && checkUser) {
+    next({ path: '/app' })
   } else {
     next()
   }

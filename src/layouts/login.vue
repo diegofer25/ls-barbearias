@@ -3,7 +3,7 @@
     <q-page-container>
       <q-page>
         <div class="row text-white" style="height: 100vh">
-          <div class="self-center col-sm-10 offset-sm-1 col-md-6 offset-md-3 shadow-10">
+          <div class="self-center col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 shadow-10">
             <q-card text-color="white" flat class="bg-teal-8">
               <q-card-main>
                 <div class="row q-pa-sm text-center">
@@ -85,6 +85,7 @@ import { mapGetters } from 'vuex'
 import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
 import cache from 'src/cache'
 import firebase from 'firebase'
+import firebaseAuth from 'src/firestore/firebaseAuth.js'
 
 export default {
   name: 'Login',
@@ -111,16 +112,13 @@ export default {
   },
   mounted () {
     if (!firebase.apps.length) {
-      firebase.initializeApp({
-        apiKey: 'AIzaSyADpbhg0JXFh74zEhvEVNPgnu91NsdZLkE',
-        authDomain: 'ls-saloon-login.firebaseapp.com',
-        databaseURL: 'https://ls-saloon-login.firebaseio.com',
-        projectId: 'ls-saloon-login'
-      })
+      firebase.initializeApp(firebaseAuth)
     }
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.$router.push({ path: 'app' })
+      } else {
+        this.$router.push({ path: '/' })
       }
     })
   },
@@ -131,7 +129,6 @@ export default {
   },
   methods: {
     submit () {
-      this.loading = true
       const notify = this.$q.notify
       const form = this.$v.form
       form.$touch()
@@ -143,6 +140,7 @@ export default {
         else if (!form.password.minLength) notify('Campo senha é deve possui no mínimo 6 caracteres')
         else if (!form.password.maxLength) notify('Campo senha é deve possui no máximo 10 caracteres')
       } else {
+        this.loading = true
         firebase.auth().signInWithEmailAndPassword(this.form.email, this.form.password)
           .then(user => {
             console.log(user)
