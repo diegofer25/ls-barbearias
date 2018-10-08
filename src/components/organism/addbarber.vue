@@ -11,23 +11,26 @@
     <span slot="message">Preencha todas as informações</span>
 
     <div slot="body">
-        <q-field
-          :count="50"
-          :error="validation.name.error"
-          :error-label="validation.name.message"
-        >
-          <q-input type="text" @keyup="nameValidator" class="q-pb-md" v-model="barber.name" float-label="Informe um nome" placeholder="Nome"/>
-        </q-field>
+      <q-field
+        :count="50"
+        :error="validation.name.error"
+        :error-label="validation.name.message"
+      >
+        <q-input type="text" @keyup="nameValidator" class="q-pb-md" v-model="barber.name" float-label="Informe um nome" placeholder="Nome"/>
+      </q-field>
 
-        <q-field
-          :count="11"
-          :error="validation.cpf.error"
-          :error-label="validation.cpf.message"
-        >
-          <q-input type="text" @keyup="cpfValidator" class="q-pb-md" v-model="barber.cpf" float-label="Informe o CPF" placeholder="CPF" />
-        </q-field>
+      <q-field
+        :count="11"
+        :error="validation.cpf.error"
+        :error-label="validation.cpf.message"
+      >
+        <q-input type="text" @keyup="cpfValidator" class="q-pb-md" v-model="barber.cpf" float-label="Informe o CPF" placeholder="CPF" />
+      </q-field>
 
-        <q-datetime class="q-pa-md" color="teal" placeholder="Data de Entrada" v-model="barber.date" type="date" />
+      <q-datetime class="q-pa-md" color="teal" placeholder="Data de Entrada" v-model="barber.date" type="date" />
+      <q-inner-loading :visible="visible">
+        <q-spinner-gears size="50px" color="teal"></q-spinner-gears>
+      </q-inner-loading>
     </div>
 
     <template slot="buttons" slot-scope="props">
@@ -62,7 +65,8 @@ export default {
           error: false,
           message: ''
         }
-      }
+      },
+      visible: false
     }
   },
   methods: {
@@ -79,6 +83,7 @@ export default {
       let vm = this
       if (vm.barber.name !== '' && vm.barber.cpf !== '') {
         if (!vm.validation.name.error && !vm.validation.cpf.error) {
+          vm.visible = true
           db.pushBarber(vm.barber)
             .then((response) => {
               vm.barber.id = response.id
@@ -97,6 +102,7 @@ export default {
               barbers.push(vm.barber)
               cache.set('barbers', barbers)
               vm.setBarbers(barbers)
+              vm.visible = false
             })
         } else {
           this.$q.notify({

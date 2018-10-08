@@ -1,4 +1,8 @@
 export default {
+  setUser: ({ commit }, payload) => {
+    commit('setUser', payload)
+  },
+
   setForm: ({ commit }, payload) => {
     commit('setForm', payload)
   },
@@ -25,5 +29,9 @@ export default {
 
   setSchedules: ({ commit }, payload) => {
     commit('setSchedules', payload)
+  },
+
+  setExpenses: ({ commit }, payload) => {
+    commit('setExpenses', payload)
   }
 }

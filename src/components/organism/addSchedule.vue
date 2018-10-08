@@ -39,9 +39,12 @@
           <q-datetime color="teal" :default-value="schedule.time" v-model="schedule.time" type="datetime" />
         </q-field>
       </div>
+      <q-inner-loading :visible="visible">
+        <q-spinner-gears size="50px" color="teal"></q-spinner-gears>
+      </q-inner-loading>
     </div>
 
-    <template slot="buttons" slot-scope="props">
+    <template slot="buttons" slot-scope="props" :visible="!visible">
       <div class="q-pb-sm">
         <q-btn color="teal" label="Cancelar" @click="cancel()" />
         <q-btn color="green" label="Agendar" @click="addSchedule()" />
@@ -67,7 +70,8 @@ export default {
       dialog: true,
       clientsOptions: [],
       barbersOptions: [],
-      servicesOptions: []
+      servicesOptions: [],
+      visible: false
     }
   },
   computed: {
@@ -95,6 +99,7 @@ export default {
     addSchedule () {
       const vm = this
       if (vm.validateInputs()) {
+        vm.visible = true
         vm.$emit('toggle-loading', true)
         db.pushSchedule(vm.schedule).then(res => {
           vm.dialog = false
@@ -113,6 +118,7 @@ export default {
           const { getSchedules } = vm
           getSchedules.push(vm.schedule)
           this.setSchedules(getSchedules)
+          vm.visible = false
         })
       } else {
         this.$q.notify({

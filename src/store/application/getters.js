@@ -1,4 +1,8 @@
 export default {
+  getUser (state) {
+    return state.user
+  },
+
   getClients (state) {
     return state.clients
   },
@@ -17,6 +21,10 @@ export default {
 
   getSchedules (state) {
     return state.schedules
+  },
+
+  getExpenses (state) {
+    return state.expenses
   },
 
   getForm (state) {

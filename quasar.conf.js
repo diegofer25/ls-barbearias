@@ -56,6 +56,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemSeparator',
         'QField',
         'QInput',
         'QLayoutFooter',
@@ -95,7 +96,8 @@ module.exports = function (ctx) {
         'QTab',
         'QTabPane',
         'QRouteTab',
-        'QAutocomplete'
+        'QAutocomplete',
+        'QItemTile'
       ],
       directives: [
         'Ripple',
@@ -104,7 +106,8 @@ module.exports = function (ctx) {
       // Quasar plugins
       plugins: [
         'Notify',
-        'Dialog'
+        'Dialog',
+        'AppFullscreen'
       ]
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language

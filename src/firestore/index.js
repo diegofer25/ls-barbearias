@@ -7,13 +7,21 @@ const { getServiceById, pushService, editService, getServices, deleteService } =
 import clientModule from './modules/client'
 const { getClients, pushClient, editClient, deleteClient } = clientModule
 
+import expenseModule from './modules/expense'
+const { getExpenses, pushExpense, editExpense, deleteExpense } = expenseModule
+
 import paymentModule from './modules/payment'
 const { pushPayment, getPayments } = paymentModule
 
 import scheduleModule from './modules/schedulings'
 const { pushSchedule, getSchedules, editSchedule, deleteSchedule } = scheduleModule
 
+import userModule from './modules/user'
+const { getUser, setUset } = userModule
+
 export default {
+  getUser,
+  setUset,
   pushBarber,
   getBarbers,
   getServiceById,
@@ -22,6 +30,10 @@ export default {
   pushClient,
   editClient,
   deleteClient,
+  getExpenses,
+  pushExpense,
+  editExpense,
+  deleteExpense,
   pushService,
   editService,
   getServices,

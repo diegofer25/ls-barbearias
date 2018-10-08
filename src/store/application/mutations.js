@@ -1,6 +1,10 @@
 import cache from 'src/cache'
 
 export default {
+  setUser: (state, user) => {
+    state.user = user
+  },
+
   setForm: (state, newForm) => {
     state.form = newForm
   },
@@ -32,5 +36,10 @@ export default {
   setSchedules: (state, schedules) => {
     cache.set('schedules', schedules)
     state.schedules = schedules
+  },
+
+  setExpenses: (state, expenses) => {
+    cache.set('expenses', expenses)
+    state.expenses = expenses
   }
 }

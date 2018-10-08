@@ -1,16 +1,16 @@
 <template>
   <q-page padding>
+    <div class='row justify-center q-mb-md'>
+      <span class='q-display-2 text-weight-light' style="font-family: 'Fredericka the Great', cursive;">Pagamentos</span>
+    </div>
+    <div class="row">
+      <payment v-if="paying" @onfinish="finishAdding" />
+    </div>
     <div class='row'>
-      <div class='col-12'>
-        <div class='row justify-center q-mb-md'>
-          <span class='q-display-2 text-weight-light'>Pagamentos</span>
-        </div>
-        <div class="row">
-          <payment v-if="paying" @onfinish="finishAdding" />
-        </div>
+      <div class='col-sm-12 col-lg-6 q-mt-lg'>
         <div class="row" v-if="!paying">
           <q-btn
-            class="col-sm-12 col-md-8 offset-md-2 animated fadeIn"
+            class="col-sm-12 col-md-8 offset-md-2 col-lg-10 offset-lg-1 animated fadeIn"
             color="teal"
             @click="startPaying"
             size="lg"
@@ -18,17 +18,32 @@
           ><span class="q-pa-md">Receber</span></q-btn>
         </div>
         <div class="row q-py-md" v-if="lastPayment">
-          <div class="col-sm-12 col-md-8 offset-md-2 animated fadeIn">
+          <div class="col-sm-12 col-md-8 offset-md-2 col-lg-10 offset-lg-1 animated fadeIn">
             <div class="row">
               <div class="col-sm-12 col-md-6 offset-md-3" v-html="getIcons.payment"></div>
             </div>
             <div class="row text-center">
-              <span class="q-title col-12">Pagamento Realizado com Sucesso!</span>
+              <span class="q-title col-12 q-py-md">Pagamento Realizado com Sucesso!</span>
+              <p class="col-12">
+                Serviço:
+              <strong>
+                {{ formatTitle(lastPayment.service.name) }}
+              </strong> <br>
+                Cliente: <strong>{{ lastPayment.client.name }}</strong> <br>
+                Pagamento: <strong>{{ lastPayment.type.name + showFlag(lastPayment.type) }}</strong> <br>
+                Valor do Serviço: R$ <strong>{{ lastPayment.service.price.toFixed(2) }}</strong> <br>
+                <span v-if="lastPayment.type.id === 'money'">
+                  Recebido: R$ <strong>{{ lastPayment.type.received.toFixed(2) }}</strong> <br>
+                </span>
+                Barbeiro: <strong>{{ lastPayment.barber.name }}</strong>
+              </p>
             </div>
           </div>
         </div>
+      </div>
+      <div class='col-sm-12 col-lg-6'>
         <div class="row" v-if="!paying && lastfivePayments.length">
-          <span class="q-pa-sm q-mt-lg text-grey text-weight-light q-title col-sm-12 col-md-8 offset-md-2 animated fadeInUp">
+          <span class="q-pa-sm q-mt-md text-grey text-weight-light q-title col-sm-12 col-md-8 offset-md-2 col-lg-10 offset-lg-1 animated fadeInUp">
             Ultimos 5 pagamentos
           </span>
           <div class="col-sm-12">
@@ -74,6 +89,7 @@
 
 <script>
 import payment from 'src/components/organism/payment'
+import cache from 'src/cache'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -87,7 +103,7 @@ export default {
     return {
       paying: false,
       lastfivePayments: [],
-      lastPayment: ''
+      lastPayment: cache.get('lastPayment') ? cache.get('lastPayment') : ''
     }
   },
   mounted () {
@@ -112,6 +128,7 @@ export default {
       this.paying = false
       this.getLastFivePayments()
       this.lastPayment = service
+      cache.set('lastPayment', service)
     },
 
     showFlag (type) {

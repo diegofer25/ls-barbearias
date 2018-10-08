@@ -33,7 +33,7 @@
         </q-table>
 
         <div v-else>
-          <span class="title">Não há clientes cadastrado</span>
+          <span class="title">Não há clientes cadastrados</span>
         </div>
       </transition>
 

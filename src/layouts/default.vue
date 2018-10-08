@@ -12,8 +12,10 @@
               </div>
               <div class="col-12">
                 <div class="row justify-center">
-                  <span class="q-display-1 text-center text-white text-weight-thin">
-                    LS Contabilidade <br> Barbearia
+                  <span
+                    class="q-display-1 text-center text-white text-weight-thin"
+                    style="font-family: 'Fredericka the Great', cursive;">
+                    {{ storeName ? storeName : 'LS Barbearias' }}
                   </span>
                 </div>
               </div>
@@ -39,9 +41,15 @@
           </q-btn>
 
           <q-toolbar-title>
-            LS Barbearia
-            <div slot="subtitle">Controle e Gestão de Barbearia</div>
+            <span style="font-family: 'Fredericka the Great', cursive;">{{ storeName ? storeName : 'LS Barbearias' }}</span>
+            <div slot="subtitle">Controle e Gestão de Barbearias</div>
           </q-toolbar-title>
+
+          <q-btn
+            flat round dense
+            :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
+            @click.native="$q.fullscreen.toggle()"
+          />
         </q-toolbar>
       </q-layout-header>
 
@@ -61,19 +69,19 @@
             <q-item-side :icon="item.icon" />
             <q-item-main :label="item.label" :sublabel="item.subLabel" />
           </q-item>
+          <q-collapsible indent icon="settings" label="Configurações" sublabel="Configurações do sistema">
+            <q-list link class="q-mr-sm" separator>
+              <q-item @click.native="sync">
+                <q-item-side icon="sync" />
+                <q-item-main label="Sincronizar" sublabel="Atualiza dados" />
+              </q-item>
+            </q-list>
+          </q-collapsible>
+          <q-item @click.native="logout">
+            <q-item-side icon="exit_to_app" />
+            <q-item-main label="Sair" sublabel="Finaliza sua seção" />
+          </q-item>
         </q-list>
-        <q-collapsible indent icon="settings" label="Configurações" sublabel="Configurações do sistema">
-          <q-list link class="q-mr-sm" separator>
-            <q-item @click.native="sync">
-              <q-item-side icon="sync" />
-              <q-item-main label="Sincronizar" sublabel="Atualiza dados" />
-            </q-item>
-            <q-item @click.native="logout">
-              <q-item-side icon="exit_to_app" />
-              <q-item-main label="Logout" sublabel="Finaliza sua seção" />
-            </q-item>
-          </q-list>
-        </q-collapsible>
 
       </q-layout-drawer>
 
@@ -100,6 +108,7 @@ export default {
   name: 'LayoutDefault',
   data () {
     return {
+      storeName: cache.get('user').storeName,
       leftDrawerOpen: this.$q.platform.is.desktop,
       loading: true,
       year: new Date().getFullYear(),
@@ -129,13 +138,13 @@ export default {
           action: '/app/barbers'
         },
         {
-          icon: 'book',
+          icon: 'import_contacts',
           label: 'Agenda',
           subLabel: 'Agenda dos Barbeiros',
           action: '/app/shedule'
         },
         {
-          icon: 'import_contacts',
+          icon: 'book',
           label: 'Catálogo de Serviços',
           subLabel: 'Gerenciar Serviços',
           action: '/app/services'
@@ -145,6 +154,12 @@ export default {
           label: 'Relatórios',
           subLabel: 'Relatórios do sistema',
           action: '/app/reports'
+        },
+        {
+          icon: 'money_off',
+          label: 'Despesas',
+          subLabel: 'Despesas da Barbearia',
+          action: '/app/expenses'
         }
       ]
     }
@@ -156,10 +171,12 @@ export default {
       'getServices',
       'getBarbers',
       'getPayments',
-      'getSchedules'
+      'getSchedules',
+      'getExpenses'
     ])
   },
   mounted () {
+    if (this.$q.platform.is.mobile) this.$q.fullscreen.request()
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.startApplication()
@@ -174,17 +191,15 @@ export default {
       'setServices',
       'setBarbers',
       'setPayments',
-      'setSchedules'
+      'setSchedules',
+      'setExpenses'
     ]),
 
     logout () {
       const notify = this.$q.notify
       firebase.auth().signOut().then(() => {
         cache.del('user')
-        notify({
-          message: 'Até logo...',
-          color: 'positive'
-        })
+        location.reload()
       }, error => {
         console.log(error)
         notify('Erro na comunicação com o servidor')
@@ -208,7 +223,8 @@ export default {
         vm.requestServices(),
         vm.requestBarbers(),
         vm.requestPayments(),
-        vm.requestSchedules()
+        vm.requestSchedules(),
+        vm.requestExpenses()
       ]).then(responses => {
         responses.map(res => {
           vm[res.type](res.data)
@@ -324,6 +340,19 @@ export default {
           })
         } else {
           resolve({ type: 'setSchedules', data: cache.get('schedules') })
+        }
+      })
+    },
+
+    requestExpenses () {
+      return new Promise(resolve => {
+        if (!cache.has('expenses')) {
+          db.getExpenses().then((expense) => {
+            cache.set('expenses', expense.data)
+            resolve({ type: 'setExpenses', data: expense.data })
+          })
+        } else {
+          resolve({ type: 'setExpenses', data: cache.get('expenses') })
         }
       })
     }

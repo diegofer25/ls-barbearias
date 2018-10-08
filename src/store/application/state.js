@@ -1,9 +1,11 @@
 export default {
+  user: '',
   clients: [],
   services: [],
   barbers: [],
   payments: [],
   schedules: [],
+  expenses: [],
   form: {
     name: '',
     email: '',

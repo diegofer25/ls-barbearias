@@ -20,7 +20,8 @@ export default [
         ]
       },
       { path: 'services', component: () => import('pages/services') },
-      { path: 'reports', component: () => import('pages/reports') }
+      { path: 'reports', component: () => import('pages/reports') },
+      { path: 'expenses', component: () => import('pages/expenses') }
     ]
   },
 

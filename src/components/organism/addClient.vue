@@ -23,12 +23,15 @@
         </q-field>
 
         <q-datetime class="q-pa-md" color="teal" placeholder="Data de Nascimento" v-model="client.birthday" type="date" />
+        <q-inner-loading :visible="visible">
+          <q-spinner-gears size="50px" color="teal"></q-spinner-gears>
+        </q-inner-loading>
     </div>
 
     <template slot="buttons" slot-scope="props">
       <div class="q-pb-sm">
         <q-btn color="teal" label="Cancelar" @click="props.cancel" />
-        <q-btn color="green" label="Cadastrar" @click="addClient()" />
+        <q-btn color="green" label="Cadastrar" @click="processAddClient()" />
       </div>
     </template>
   </q-dialog>
@@ -63,7 +66,8 @@ export default {
           error: false,
           message: ''
         }
-      }
+      },
+      visible: false
     }
   },
   methods: {
@@ -76,8 +80,17 @@ export default {
       this.toggleDialog(this.dialog)
     },
 
+    processAddClient () {
+      if (this.client.name) {
+        this.addClient()
+      } else {
+        this.$q.notify('Informe pelo menos um nome para o cliente')
+      }
+    },
+
     addClient () {
       const vm = this
+      vm.visible = true
       vm.toggleDialog(vm.dialog)
       vm.$emit('toggle-loading', true)
       vm.client.birthday = new Date(vm.client.birthday).getTime()
@@ -85,7 +98,7 @@ export default {
         .then((res) => {
           vm.$emit('toggle-loading', false)
           vm.client.id = res.id
-          this.$q.notify({
+          vm.$q.notify({
             message: res.message,
             timeout: 5000,
             type: 'positive',
@@ -98,6 +111,7 @@ export default {
           getClients.push(vm.client)
           vm.setClients(getClients)
           vm.dialog = false
+          vm.visible = false
         })
     }
   }

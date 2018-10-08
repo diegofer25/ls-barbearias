@@ -12,7 +12,7 @@
     <div class='row'>
       <div class='col-12'>
         <div class='row justify-center q-mb-md'>
-          <span class='q-display-2 text-weight-light'>Agenda</span>
+          <span class='q-display-2 text-weight-light' style="font-family: 'Fredericka the Great', cursive;">Agenda</span>
         </div>
         <div class="row">
           <q-btn

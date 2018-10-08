@@ -21,6 +21,7 @@ const delAll = () => {
   localStorage.removeItem('payments')
   localStorage.removeItem('schedules')
   localStorage.removeItem('services')
+  localStorage.removeItem('expenses')
 }
 
 export default {
