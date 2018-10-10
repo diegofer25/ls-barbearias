@@ -49,5 +49,9 @@ export default {
 
   getIcons (state) {
     return state.icons
+  },
+
+  mounths (state) {
+    return state.mounths
   }
 }

@@ -134,8 +134,9 @@ export default {
           vm.setServices(vm.getServices.map(service => {
             return service.id === vm.selected[0].id ? vm.selected[0] : service
           }))
-          vm.selected = []
+          vm.editing = false
           vm.loading = false
+          vm.selected = []
         })
     },
 

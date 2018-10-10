@@ -131,7 +131,8 @@ export default {
           vm.setBarbers(vm.getBarbers.map((barber) => {
             return barber.id === vm.selected[0].id ? vm.selected[0] : barber
           }))
-          this.loading = false
+          vm.editing = false
+          vm.loading = false
           vm.selected = []
         })
     },

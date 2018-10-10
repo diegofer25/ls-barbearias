@@ -141,6 +141,7 @@ export default {
           vm.setClients(vm.getClients.map((client) => {
             return client.id === vm.selected[0].id ? vm.selected[0] : client
           }))
+          vm.editing = false
           vm.loading = false
           vm.selected = []
         })

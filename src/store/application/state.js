@@ -6,6 +6,7 @@ export default {
   payments: [],
   schedules: [],
   expenses: [],
+  mounths: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
   form: {
     name: '',
     email: '',

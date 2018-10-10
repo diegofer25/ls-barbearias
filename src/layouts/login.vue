@@ -199,6 +199,7 @@ export default {
                 if (license.users[vm.form.username]) {
                   if (license.users[vm.form.username].pass === vm.form.password) {
                     delete license.users
+                    license.currentUser = vm.form.username
                     cache.set('user', license)
                     if (license.storeName) vm.$router.push({ path: '/app' })
                     else vm.firstLogin(license)

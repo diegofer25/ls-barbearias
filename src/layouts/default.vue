@@ -46,6 +46,7 @@
           </q-toolbar-title>
 
           <q-btn
+            v-if="!$q.platform.is.mobile"
             flat round dense
             :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
             @click.native="$q.fullscreen.toggle()"
