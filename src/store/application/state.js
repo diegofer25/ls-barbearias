@@ -58,7 +58,8 @@ export default {
       label: 'Fone',
       align: 'left',
       field: 'phone',
-      sortable: true
+      sortable: true,
+      format: val => val ? val + '' : 'Não iformado'
     },
     {
       name: 'email',
@@ -66,7 +67,8 @@ export default {
       label: 'E-mail',
       align: 'left',
       field: 'email',
-      sortable: true
+      sortable: true,
+      format: val => val !== '' ? val : 'Não iformado'
     },
     {
       name: 'birthday',
@@ -75,7 +77,7 @@ export default {
       align: 'left',
       field: 'birthday',
       sortable: true,
-      format: val => new Date(val).toLocaleDateString()
+      format: val => val ? new Date(val).toLocaleDateString() : 'Não iformado'
     }
   ],
   servicesColumns: [

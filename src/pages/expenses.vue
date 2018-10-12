@@ -137,7 +137,7 @@
                             helper="Informe um nome para a nova categoria de despesa"
                             :count="10"
                           >
-                            <q-input :max-length="10" v-model="newCategory" />
+                            <q-input :max-length="20" v-model="newCategory" />
                           </q-field>
                         </div>
                       </div>
@@ -252,7 +252,7 @@ export default {
     pushExpensesCategory () {
       const vm = this
       if (!vm.newCategory) return vm.$q.notify('Informe um nome válido')
-      if (!(vm.newCategory.length <= 10)) return vm.$q.notify('A categoria deve ter no máximo 10 caracteres')
+      if (!(vm.newCategory.length < 20)) return vm.$q.notify('A categoria deve ter no máximo 20 caracteres')
       if (vm.getExpenses.some(cat => cat.label.toLowerCase() === vm.newCategory.toLowerCase())) return vm.$q.notify('Essa categoria já foi cadastrada')
       vm.loading = true
       const expense = {
