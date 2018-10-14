@@ -198,12 +198,12 @@ export default {
       db.editSchedule(vm.pullOffingSchedule)
         .then((res) => {
           this.$q.notify({
-            message: 'Agendamento adiado com sucesso',
+            message: 'Agendamento adiado',
             timeout: 5000,
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           vm.setSchedules(vm.getSchedules.map(schedule => {
@@ -244,7 +244,7 @@ export default {
               type: 'positive',
               color: 'positive',
               icon: 'done_all',
-              position: 'top',
+              position: 'bottom',
               actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
             })
             vm.setSchedules(vm.getSchedules.filter((s) => {

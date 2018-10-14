@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <q-layout v-else view="hHh LpR fFf" dark>
+    <q-layout v-else view="hHh LpR fFf" class="animated zoomIn" dark>
       <q-layout-header>
         <q-toolbar color="teal">
           <q-btn
@@ -249,7 +249,7 @@ export default {
               type: 'positive',
               color: 'positive',
               icon: 'done_all',
-              position: 'top',
+              position: 'bottom',
               actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
             })
           } else {
@@ -259,7 +259,7 @@ export default {
               type: 'negative',
               color: 'negative',
               icon: 'warning',
-              position: 'top',
+              position: 'bottom',
               actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
             })
           }

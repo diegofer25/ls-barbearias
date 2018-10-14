@@ -7,7 +7,7 @@
         </div>
         <div class="row justify-around q-py-sm">
           <q-field
-            class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 q-mb-md"
+            class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 q-pa-md"
           >
             <q-select
               v-model="selectedMounth"
@@ -16,13 +16,16 @@
               :options="mounthsOptions"
             />
           </q-field>
-          <q-select
-            v-model="selectedYear"
-            float-label="Ano"
-            radio color="teal"
-            :options="yearsOptions"
-            class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 q-mb-md"
-          />
+          <q-field
+            class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 q-pa-md"
+          >
+            <q-select
+              v-model="selectedYear"
+              float-label="Ano"
+              radio color="teal"
+              :options="yearsOptions"
+            />
+          </q-field>
         </div>
         <div class="row animated fadeInDown" v-if="filterPerMounthAndYear(getExpenses).length === 0 && (selectedMounth + '/' + selectedYear !== formatDateToCompare(new Date()))">
           <span class="col-12 text-center q-mb-md q-pa-sm bg-red text-white">
@@ -31,7 +34,10 @@
         </div>
         <div class="row">
             <div class="col-12 shadow-5">
-              <q-tabs color="teal" v-model="selectedTab">
+              <q-tabs
+                color="teal" v-model="selectedTab" class="animated zoomIn"
+                v-if="filterPerMounthAndYear(getExpenses).length || (selectedMounth > new Date().getMonth() || selectedYear > new Date().getFullYear())"
+              >
                 <q-tab
                   v-for="(cat, index) in filterPerMounthAndYear(getExpenses)"
                   :key="index"
@@ -41,15 +47,27 @@
                   :default="index === 0" style="font-family: 'Fredericka the Great', cursive;"
                   :count="cat.expenses ? cat.expenses.length : 0"
                 />
-                <q-tab slot="title" name="tab-add" icon="add_circle_outline" :default="filterPerMounthAndYear(getExpenses).length === 0"/>
+                <q-tab
+                  slot="title" name="tab-add" icon="add_circle_outline" :default="filterPerMounthAndYear(getExpenses).length === 0"
+                  v-if="selectedMounth > new Date().getMonth() || selectedYear > new Date().getFullYear()"/>
                 <q-tab-pane
                   v-for="(cat, index) in filterPerMounthAndYear(getExpenses)" :key="index"
                   :name="'tab-' + (index + 1)" class="animated fadeIn"
                 >
-                  <div class="row q-pb-md justify-end">
-                    <q-btn color="teal" class="q-mr-sm" @click.stop="actionSheet = true">
-                      <q-icon name="settings" /> Ações de {{ cat.label }}
-                    </q-btn>
+                  <div class="row">
+                    <div class="col-sm-12 col-md-10 offset-md-1">
+                      <div class="row q-pb-md justify-end">
+                         <q-btn
+                          :color="cat.fixed ? 'positive' : 'teal'" class="q-mr-sm" :outline="!cat.fixed"
+                          :loading="btnLoading" :round="btnLoading"
+                          :icon="cat.fixed ? 'gps_fixed' : 'gps_not_fixed'"
+                          @click.stop="fixCAtegory(cat)"
+                        >{{ cat.fixed ? 'Despesas Fixas' : 'Fixar despesas' }}</q-btn>
+                        <q-btn color="teal" @click.stop="actionSheet = true">
+                          <q-icon name="settings" />
+                        </q-btn>
+                      </div>
+                    </div>
                     <q-action-sheet
                       v-model="actionSheet"
                       @ok="onOk" :grid="!$q.platform.is.mobile"
@@ -97,16 +115,28 @@
                       <div v-if="cat.expenses.length">
                         <q-list highlight>
                           <q-list-header>Despesas de {{ cat.label }}</q-list-header>
-                          <q-item v-for="(expense, index) in cat.expenses" :key="index">
-                            <q-item-main :label="expense.deadline ? expense.deadline : ''">
+                          <q-item v-for="(expense, expenseIndex) in cat.expenses" :key="expenseIndex">
+                            <q-item-main :label="expense.deadline ? new Date(expense.deadline).toLocaleString() : ''">
                               <span class="q-title">{{ expense.name }}</span>
                               <p>{{ 'R$ ' + expense.value.toFixed(2).toLocaleString() }}</p>
                             </q-item-main>
                             <q-item-side right>
-                              <q-btn class="q-mx-sm animated fadeInLeft" round icon="edit" color="positive" v-if="editing"></q-btn>
-                              <q-btn class="q-mx-sm animated fadeInLeft" round icon="delete" color="red" v-if="deleting"></q-btn>
-                              <q-btn class="q-mx-sm animated fadeInLeft" round icon="close" color="grey" v-if="editing || deleting"
-                                @click.stop="cancelAction"></q-btn>
+                              <q-btn
+                                class="q-mx-sm animated fadeInLeft"
+                                round icon="edit" color="positive"
+                                v-if="editing" @click.stop="sendExpenseToEdit(expense, index)"
+                              ></q-btn>
+                              <q-btn
+                                class="q-mx-sm animated fadeInLeft"
+                                round icon="delete" color="red"
+                                v-if="deleting" @click.stop="sendExpenseToDelete(expense, cat)"
+                              ></q-btn>
+                              <q-btn
+                                class="q-mx-sm animated fadeInLeft"
+                                round icon="close" color="grey"
+                                v-if="editing || deleting"
+                                @click.stop="cancelAction"
+                              ></q-btn>
                               <q-item-tile color="teal" />
                             </q-item-side>
                           </q-item>
@@ -160,7 +190,7 @@
               </q-tabs>
               <div class="row text-center q-ma-sm" v-if="totalizeAll(filterPerMounthAndYear(getExpenses)) > 0">
                 <div class="col-12">
-                  <span class="q-pa-md text-red q-title">Total Geral: R$ -{{ totalizeAll(filterPerMounthAndYear(getExpenses)) }}</span>
+                  <span class="q-pa-md text-red q-title">Total de {{ mounths[selectedMounth - 1] }}: R$ -{{ totalizeAll(filterPerMounthAndYear(getExpenses)) }}</span>
                 </div>
               </div>
             </div>
@@ -226,6 +256,7 @@ export default {
       selectedYear: new Date().getFullYear(),
       mounthsOptions: [],
       yearsOptions: [],
+      btnLoading: false,
       expense: {
         name: '',
         value: '',
@@ -235,7 +266,7 @@ export default {
   },
   mounted () {
     const yearsNumbers = new Date().getFullYear() - this.createYear
-    for (let i = 0; i <= yearsNumbers; i++) {
+    for (let i = 0; i <= yearsNumbers + 1; i++) {
       this.yearsOptions.push({
         label: String(this.createYear + i),
         value: this.createYear + i
@@ -244,6 +275,9 @@ export default {
     this.mounthsOptions = this.mounths.map((mounth, index) => {
       return { label: mounth, value: index + 1 }
     })
+    if (new Date().getDate() === 1) {
+      this.registerFixedsCategories()
+    }
   },
   methods: {
     ...mapActions('application', [
@@ -269,7 +303,7 @@ export default {
           type: 'positive',
           color: 'positive',
           icon: 'done_all',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
         const { getExpenses } = vm
@@ -298,6 +332,11 @@ export default {
     },
 
     cancel () {
+      this.expense = {
+        name: '',
+        value: '',
+        deadline: ''
+      }
       this.dialog = false
       this.handCategory = ''
     },
@@ -321,29 +360,44 @@ export default {
 
     deleteCategory (cat) {
       const vm = this
-      if (cat.id) {
-        vm.loading = true
-        db.deleteExpense(cat.id).then(res => {
-          vm.$q.notify({
-            message: `Categoria ${cat.label} excluída com sucesso`,
-            timeout: 5000,
-            type: 'positive',
-            color: 'positive',
-            icon: 'done_all',
-            position: 'top',
-            actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+      vm.$q.dialog({
+        title: 'Confirmação',
+        message: 'Deseja mesmo excluir esta categoria de despesa, isso irá EXCLUIR TODAS AS DESPESAS relacionadas a esta categoria?',
+        ok: {
+          color: 'positive',
+          label: 'Sim'
+        },
+        cancel: {
+          label: 'Não',
+          color: 'teal'
+        }
+      }).then(() => {
+        if (cat.id) {
+          vm.loading = true
+          db.deleteExpense(cat.id).then(res => {
+            vm.$q.notify({
+              message: `Categoria ${cat.label} excluída com sucesso`,
+              timeout: 5000,
+              type: 'positive',
+              color: 'positive',
+              icon: 'done_all',
+              position: 'bottom',
+              actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+            })
+            var { getExpenses } = vm
+            getExpenses = getExpenses.filter(item => {
+              return item.id !== cat.id
+            })
+            this.setExpenses(getExpenses)
+            vm.loading = false
+            if (!vm.filterPerMounthAndYear(vm.getExpenses).length) vm.selectedTab = 'tab-add'
           })
-          var { getExpenses } = vm
-          getExpenses = getExpenses.filter(item => {
-            return item.id !== cat.id
-          })
-          this.setExpenses(getExpenses)
-          vm.loading = false
-          if (!vm.filterPerMounthAndYear(vm.getExpenses).length) vm.selectedTab = 'tab-add'
-        })
-      } else {
-        vm.$q.notify('Não há categoria para exclusão, cadastre uma.')
-      }
+        } else {
+          vm.$q.notify('Não há categoria para exclusão, cadastre uma.')
+        }
+      }).catch(() => {
+        vm.$q.notify('Operação cancelada')
+      })
     },
 
     addExpense (index) {
@@ -356,9 +410,19 @@ export default {
       if (vm.expense.name && vm.expense.value) {
         vm.loading = true
         const { getExpenses } = vm
-        const category = getExpenses[vm.handCategory]
-        vm.expense.timestamp = new Date().getTime()
-        category.expenses.push(vm.expense)
+        const category = vm.filterPerMounthAndYear(getExpenses)[vm.handCategory]
+        if (!vm.editing) {
+          vm.expense.timestamp = new Date().getTime()
+          category.expenses.push(vm.expense)
+        } else {
+          category.expenses = category.expenses.map(exp => {
+            if (exp.timestamp === expense.timestamp) {
+              return expense
+            } else {
+              return exp
+            }
+          })
+        }
         db.editExpense(category).then(res => {
           vm.$q.notify({
             message: res.message,
@@ -366,15 +430,16 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
-          this.setExpenses(cache.get('expenses').map(expense => {
+          vm.setExpenses(cache.get('expenses').map(expense => {
             return expense.label === category.label ? category : expense
           }))
+          vm.editing = false
           vm.handCategory = ''
           vm.loading = false
-          this.dialog = false
+          vm.dialog = false
           vm.expense = {
             name: '',
             value: '',
@@ -402,6 +467,88 @@ export default {
       } else {
         this.$q.notify('Não há despesas para exclusão, cadastre uma.')
       }
+    },
+
+    sendExpenseToDelete (deleteExpense, category) {
+      const vm = this
+      vm.$q.dialog({
+        title: 'Confirmação',
+        message: 'Deseja mesmo excluir esta despesa?',
+        ok: {
+          color: 'positive',
+          label: 'Sim'
+        },
+        cancel: 'Não'
+      }).then(() => {
+        vm.loading = true
+        category.expenses = category.expenses.filter(exp => {
+          return exp.timestamp !== deleteExpense.timestamp
+        })
+        console.log(category)
+        db.editExpense(category).then(res => {
+          vm.$q.notify({
+            message: 'Categoria excluída',
+            timeout: 5000,
+            type: 'positive',
+            color: 'positive',
+            icon: 'done_all',
+            position: 'bottom',
+            actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+          })
+          this.setExpenses(cache.get('expenses').map(expense => {
+            return expense.id === category.id ? category : expense
+          }))
+          vm.loading = false
+        })
+      }).catch(() => {
+        vm.$q.notify('Operação cancelada')
+      })
+    },
+
+    sendExpenseToEdit (expense, index) {
+      const vm = this
+      vm.handCategory = index
+      vm.expense = expense
+      vm.dialog = true
+    },
+
+    fixCAtegory (category, status) {
+      const vm = this
+      this.btnLoading = true
+      if (!category.fixed) category.fixed = true
+      else category.fixed = false
+      db.editExpense(category).then(res => {
+        vm.$q.notify({
+          message: 'Despesas ' + (category.fixed ? 'fixadas' : 'desafixadas') + '',
+          timeout: 5000,
+          type: 'positive',
+          color: 'positive',
+          icon: 'done_all',
+          position: 'bottom',
+          actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+        })
+        this.setExpenses(cache.get('expenses').map(expense => {
+          return expense.id === category.id ? category : expense
+        }))
+        vm.btnLoading = false
+      })
+    },
+
+    registerFixedsCategories () {
+      const vm = this
+      vm.getExpenses.filter(category => {
+        return category.fixed && new Date(category.timestamp).getMonth() === (new Date().getMonth() - 1)
+      })
+        .map(category => {
+          delete category.id
+          category.timestamp = new Date().getTime()
+          db.pushExpense(category).then(res => {
+            category.id = res.id
+            const { getExpenses } = vm
+            getExpenses.push(category)
+            this.setExpenses(getExpenses)
+          })
+        })
     }
   }
 }

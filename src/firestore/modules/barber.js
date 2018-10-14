@@ -5,7 +5,7 @@ export default {
     return db.collection('barbers').add(barber)
       .then((docRef) => {
         return {
-          message: barber.name + ' cadastrado com sucesso',
+          message: barber.name + ' cadastrado',
           id: docRef.id
         }
       })
@@ -32,7 +32,7 @@ export default {
     return db.collection('barbers').doc(barber.id).set(barber)
       .then(() => {
         return {
-          message: 'Barbeiro atualizado com sucesso'
+          message: 'Barbeiro atualizado'
         }
       })
       .catch(processError)
@@ -42,7 +42,7 @@ export default {
     return db.collection('barbers').doc(id).delete()
       .then(function () {
         return {
-          message: 'Barbeiro exluído com sucesso'
+          message: 'Barbeiro exluído'
         }
       })
       .catch(processError)

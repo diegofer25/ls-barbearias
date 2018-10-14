@@ -54,7 +54,7 @@ export default {
         email: '',
         createDate: new Date().getTime(),
         phone: '',
-        birthday: undefined
+        birthday: ''
       },
       dialog: true,
       validation: {
@@ -93,7 +93,7 @@ export default {
       vm.visible = true
       vm.toggleDialog(vm.dialog)
       vm.$emit('toggle-loading', true)
-      vm.client.birthday = new Date(vm.client.birthday).getTime()
+      if (vm.client.birthday) vm.client.birthday = new Date(vm.client.birthday).getTime()
       db.pushClient(vm.client)
         .then((res) => {
           vm.$emit('toggle-loading', false)
@@ -104,7 +104,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           const { getClients } = vm

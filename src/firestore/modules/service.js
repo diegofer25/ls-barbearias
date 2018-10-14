@@ -37,7 +37,7 @@ export default {
     return db.collection('services').add(service)
       .then((docRef) => {
         return {
-          message: 'Serviço Cadastrado com sucesso',
+          message: 'Serviço Cadastrado',
           id: docRef.id
         }
       })
@@ -48,7 +48,7 @@ export default {
     return db.collection('services').doc(service.id).set(service)
       .then(() => {
         return {
-          message: 'Serviço atualizado com sucesso'
+          message: 'Serviço atualizado'
         }
       })
       .catch(processError)
@@ -58,7 +58,7 @@ export default {
     return db.collection('services').doc(id).delete()
       .then(() => {
         return {
-          message: 'service deletado com sucesso'
+          message: 'service deletado'
         }
       })
       .catch(processError)

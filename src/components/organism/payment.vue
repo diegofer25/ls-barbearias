@@ -299,7 +299,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           const { getPayments } = vm

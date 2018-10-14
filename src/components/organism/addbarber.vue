@@ -95,7 +95,7 @@ export default {
                 type: 'positive',
                 color: 'positive',
                 icon: 'done_all',
-                position: 'top',
+                position: 'bottom',
                 actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
               })
               let barbers = cache.has('barbers') ? cache.get('barbers') : []
@@ -111,7 +111,7 @@ export default {
             type: 'negative',
             color: 'negative',
             icon: 'warning',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
         }
@@ -122,7 +122,7 @@ export default {
           type: 'negative',
           color: 'negative',
           icon: 'warning',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
       }

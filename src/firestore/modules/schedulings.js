@@ -5,7 +5,7 @@ export default {
     return db.collection('schedules').add(schedule)
       .then((docRef) => {
         return {
-          message: 'Cliente agendado com sucesso',
+          message: 'Cliente agendado',
           id: docRef.id
         }
       })
@@ -32,7 +32,7 @@ export default {
     return db.collection('schedules').doc(schedule.id).set(schedule)
       .then(() => {
         return {
-          message: 'Agendamento adiado com sucesso'
+          message: 'Agendamento adiado'
         }
       })
       .catch(processError)
@@ -42,7 +42,7 @@ export default {
     return db.collection('schedules').doc(id).delete()
       .then(() => {
         return {
-          message: 'Agendamento desmarcado com sucesso'
+          message: 'Agendamento desmarcado'
         }
       })
       .catch(processError)

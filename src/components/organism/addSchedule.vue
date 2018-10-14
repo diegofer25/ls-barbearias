@@ -98,6 +98,10 @@ export default {
 
     addSchedule () {
       const vm = this
+      console.log(new Date(vm.schedule.time).getTime())
+      if (new Date(vm.schedule.time).getTime() < new Date().getTime()) {
+        return vm.$q.notify('A data e hora do agendamento não pode ser menor que a data e hora atual')
+      }
       if (vm.validateInputs()) {
         vm.visible = true
         vm.$emit('toggle-loading', true)
@@ -106,13 +110,13 @@ export default {
           vm.schedule.id = res.id
           vm.toggleDialog(vm.dialog)
           vm.$emit('toggle-loading', false)
-          this.$q.notify({
+          vm.$q.notify({
             message: res.message,
             timeout: 5000,
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           const { getSchedules } = vm
@@ -121,13 +125,13 @@ export default {
           vm.visible = false
         })
       } else {
-        this.$q.notify({
+        vm.$q.notify({
           message: 'Por favor informe todos os campos',
           timeout: 5000,
           type: 'warning',
           color: 'warning',
           icon: 'warning',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
       }

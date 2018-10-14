@@ -11,7 +11,7 @@
           :filter="filter"
           :data="getBarbers"
           :columns="barberColumns"
-          row-key="name"
+          row-key="id"
           selection="single"
           :selected.sync="selected"
           :loading="loading"
@@ -33,7 +33,7 @@
         </q-table>
 
         <div v-else>
-          <span class="title">Não há barberes cadastrado</span>
+          <span class="title">Não há barbeiros cadastrado</span>
         </div>
       </transition>
 
@@ -104,7 +104,7 @@ export default {
           type: 'info',
           color: 'info',
           icon: 'info',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
       } else {
@@ -125,7 +125,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           vm.setBarbers(vm.getBarbers.map((barber) => {
@@ -148,7 +148,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           vm.setBarbers(vm.getBarbers.filter((barber) => {

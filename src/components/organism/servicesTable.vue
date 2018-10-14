@@ -13,7 +13,7 @@
           :filter="filter"
           :data="getServices"
           :columns="servicesColumns"
-          row-key="name"
+          row-key="id"
           selection="single"
           :selected.sync="selected"
           rows-per-page-label="Linhas por página">
@@ -109,7 +109,7 @@ export default {
           type: 'info',
           color: 'info',
           icon: 'info',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
       } else {
@@ -128,7 +128,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           vm.setServices(vm.getServices.map(service => {
@@ -151,7 +151,7 @@ export default {
             type: 'positive',
             color: 'positive',
             icon: 'done_all',
-            position: 'top',
+            position: 'bottom',
             actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
           })
           vm.setServices(vm.getServices.filter(service => {

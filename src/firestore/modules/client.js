@@ -21,7 +21,7 @@ export default {
     return db.collection('clients').add(client)
       .then((docRef) => {
         return {
-          message: 'Cliente Cadastrado com sucesso',
+          message: 'Cliente Cadastrado',
           id: docRef.id
         }
       })
@@ -32,7 +32,7 @@ export default {
     return db.collection('clients').doc(client.id).set(client)
       .then(() => {
         return {
-          message: 'Cliente atualizado com sucesso'
+          message: 'Cliente atualizado'
         }
       })
       .catch(processError)
@@ -42,7 +42,7 @@ export default {
     return db.collection('clients').doc(id).delete()
       .then(() => {
         return {
-          message: 'Cliente deletado com sucesso'
+          message: 'Cliente deletado'
         }
       })
       .catch(processError)

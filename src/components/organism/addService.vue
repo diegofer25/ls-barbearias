@@ -77,12 +77,12 @@ export default {
             vm.service.id = res.id
             vm.toggleDialog(vm.dialog)
             this.$q.notify({
-              message: 'Serviço cadastrado com sucesso',
+              message: 'Serviço cadastrado',
               timeout: 5000,
               type: 'positive',
               color: 'positive',
               icon: 'done_all',
-              position: 'top',
+              position: 'bottom',
               actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
             })
             const { getServices } = vm
@@ -97,7 +97,7 @@ export default {
           type: 'warning',
           color: 'warning',
           icon: 'warning',
-          position: 'top',
+          position: 'bottom',
           actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
         })
       }

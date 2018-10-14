@@ -7,8 +7,26 @@
 </template>
 
 <script>
+import cache from 'src/cache'
+
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    if (cache.has('version')) {
+      const { version } = cache.get('version')
+      if (version > (new Date().getTime() + 99999)) {
+        cache.set('version', { version: new Date().getTime() })
+        setTimeout(() => {
+          location.reload(true)
+        }, 10)
+      }
+    } else {
+      cache.set('version', { version: new Date().getTime() })
+      setTimeout(() => {
+        location.reload(true)
+      }, 10)
+    }
+  }
 }
 </script>
 

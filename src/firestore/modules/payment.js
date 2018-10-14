@@ -5,7 +5,7 @@ export default {
     return db.collection('payments').add(payment)
       .then((docRef) => {
         return {
-          message: 'Pagamento realizado com sucesso',
+          message: 'Pagamento realizado',
           id: docRef.id
         }
       })
