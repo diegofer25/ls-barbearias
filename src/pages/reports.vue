@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col-12">
             <div class="row justify-end">
-              <q-btn @click.stop="pickDate" color="teal" :loading="pickingDate" :round="pickingDate">
+              <q-btn @click.stop="pickDate" color="teal" :loading="pickingDate" :round="pickingDate" outline>
                 Data do relatório: {{ selectedDate.toLocaleDateString() }}
               </q-btn>
             </div>
@@ -16,7 +16,21 @@
         </div>
         <div class="row">
           <div class="col-12">
-            Total no mes: {{ mounthTotal }}
+            <q-tabs color="teal">
+              <q-tab default slot="title" name="tab-1" label="Diário" icon="today" />
+              <q-tab slot="title" name="tab-2" label="Semanal" icon="date_range" />
+              <q-tab slot="title" name="tab-3" label="Mensál" icon="calendar_today"/>
+
+              <q-tab-pane name="tab-1">
+                Total de hoje {{ dateToString(selectedDate, 'xx/xx') }}: R$ {{ calcDailyTotal() }}
+              </q-tab-pane>
+              <q-tab-pane name="tab-2">
+                Total da semana: R$ {{ calcWeekTotal() }}
+              </q-tab-pane>
+              <q-tab-pane name="tab-3">
+                Total do mes de {{ mounths[dateToString(selectedDate)] }}: R$ {{ calcMounthTotal() }}
+              </q-tab-pane>
+            </q-tabs>
           </div>
         </div>
       </div>
@@ -61,22 +75,13 @@ export default {
       date: new Date(),
       selectedDate: new Date(),
       pickingDate: false,
-      datepicker: false,
-      mounthTotal: 0
+      datepicker: false
     }
   },
-  mounted () {
-    this.calculate()
-  },
   methods: {
-    calculate () {
-      this.calcMounthTotal()
-    },
-
     selectDate () {
-      if (this.compareStringDate(this.selectedDate) !== this.compareStringDate(this.date)) {
+      if (this.dateToString(this.selectedDate) !== this.dateToString(this.date)) {
         this.selectedDate = this.date
-        this.calculate()
       } else {
         this.selectedDate = this.date
       }
@@ -93,23 +98,47 @@ export default {
       this.pickingDate = false
     },
 
-    compareStringDate (date, format) {
-      const d = new Date(date)
-      if (format === 'xx/xxxx') {
-        return d.getMonth() + '/' + d.getFullYear()
-      } else {
-        return d.toLocaleDateString()
-      }
+    dateToString (date, format) {
+      const d = new Date(date), vm = this
+      if (format === 'xx/xxxx') return vm.formatMounth(d.getMonth()) + '/' + d.getFullYear()
+      else if (format === 'xx/xx') return d.getDate() + '/' + vm.formatMounth(d.getMonth())
+      else if (format === 'xx') return d.getDate()
+      else if (format === 'xxxx') return d.getFullYear()
+      else if (format === 'xx/xx/xxxx') return d.toLocaleDateString()
+      else return vm.formatMounth(d.getMonth())
+    },
+
+    formatMounth (mounth) {
+      return mounth < 10 ? '0' + mounth : mounth
+    },
+
+    sumPaymentsList (list) {
+      return list.reduce((total, payment) => {
+        return total + payment.service.price
+      }, 0)
+    },
+
+    calcWeekTotal () {
+      const vm = this
+      return vm.sumPaymentsList(vm.getPayments.filter(payment => {
+        return vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx') &&
+        vm.dateToString(payment.timestamp, 'xx') >= vm.dateToString(vm.selectedDate, 'xx') &&
+        vm.dateToString(payment.timestamp, 'xx') < (vm.dateToString(vm.selectedDate, 'xx') + 7)
+      }))
+    },
+
+    calcDailyTotal () {
+      const vm = this
+      return vm.sumPaymentsList(vm.getPayments.filter(payment => {
+        return vm.dateToString(payment.timestamp, 'xx/xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xx/xxxx')
+      }))
     },
 
     calcMounthTotal () {
       const vm = this
-      vm.mounthTotal = vm.getPayments.filter(payment => {
-        return vm.compareStringDate(payment.timestamp, 'xx/xxxx') === vm.compareStringDate(vm.selectedDate, 'xx/xxxx')
-      })
-        .reduce((total, payment) => {
-          return total + payment.service.price
-        }, 0)
+      return vm.sumPaymentsList(vm.getPayments.filter(payment => {
+        return vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx')
+      }))
     }
   }
 }
