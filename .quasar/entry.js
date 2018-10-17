@@ -10,7 +10,7 @@
 import './quasar'
 
 import Vue from 'vue'
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 
 
@@ -52,6 +52,9 @@ plugins.push(pluginAxios)
 
 import pluginVuelidate from 'src/plugins/vuelidate'
 plugins.push(pluginVuelidate)
+
+import pluginApexcharts from 'src/plugins/apexcharts'
+plugins.push(pluginApexcharts)
 
 plugins.forEach(plugin => plugin({ app, router, store, Vue }))
 

@@ -5,7 +5,8 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
-      'vuelidate'
+      'vuelidate',
+      'apexcharts'
     ],
     css: [
       'app.styl'
@@ -108,8 +109,8 @@ module.exports = function (ctx) {
         'Notify',
         'Dialog',
         'AppFullscreen'
-      ]
-      // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
+      ],
+      iconSet: 'material-icons'
       // i18n: 'de' // Quasar language
     },
     // animations: 'all' --- includes all animations
