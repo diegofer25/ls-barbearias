@@ -31,7 +31,7 @@
               </q-tab-pane>
               <q-tab-pane name="tab-3">
                 Total do mes de {{ mounths[parseInt(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
-                <mounthsales :payments="filterMounth"/>
+                <mounthsales :payments="filterMounth" :date="selectedDate"/>
               </q-tab-pane>
             </q-tabs>
           </div>
