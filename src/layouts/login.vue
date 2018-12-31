@@ -19,45 +19,49 @@
                         :error="$v.form.email.$error"
                         error-label="Campo E-mail inválido"
                         icon="mail"
-                        helper="Ex: meuemail@email.com">
+                        helper="Ex: meuemail@email.com"
+                        icon-color="white"
+                      >
                         <q-input
                           type="email"
                           v-model="form.email"
-                          @blur="$v.form.email.$touch"
                           @keyup.enter="submit"
                           :error="$v.form.email.$error"
                           float-label="E-mail"
                           dark :loading="loading" :readonly="loading"
+                          color="white"
                         />
                       </q-field>
                       <q-field
                         class="col-12"
                         :error="$v.form.username.$error"
                         error-label="Campo Usuário inválido"
-                        icon="person">
+                        icon="person" icon-color="white"
+                      >
                         <q-input
                           type="text"
                           v-model="form.username"
-                          @blur="$v.form.username.$touch"
                           @keyup.enter="submit"
                           :error="$v.form.username.$error"
                           float-label="Usuário"
                           dark :loading="loading" :readonly="loading"
+                          color="white"
                         />
                       </q-field>
                       <q-field
                         class="col-12"
                         :error="$v.form.password.$error"
                         error-label="Campo Senhal inválido"
-                        icon="lock">
+                        icon="lock" icon-color="white"
+                      >
                         <q-input
                           type="password"
                           v-model="form.password"
-                          @blur="$v.form.password.$touch"
                           @keyup.enter="submit"
                           :error="$v.form.password.$error"
                           float-label="Senha"
                           dark :loading="loading" :readonly="loading"
+                          color="white"
                         />
                       </q-field>
                       <div class="col-12">
