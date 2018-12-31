@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-around">
-    <div class="col-sm-12 col-md-6">
+    <div class="col-sm-12">
       <apexcharts width="100%" type="area" :options="options" :series="series"></apexcharts>
     </div>
   </div>
@@ -24,6 +24,13 @@ export default {
         chart: {
           id: 'mounth-total'
         },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              return 'R$ ' + value
+            }
+          }
+        },
         tooltip: {
           enabled: true,
           shared: true,
@@ -38,12 +45,12 @@ export default {
           x: {
             show: true,
             format: 'dd MMM',
-            formatter: undefined
+            formatter: (val) => 'Dia ' + val
           },
           y: {
             formatter: undefined,
             title: {
-              formatter: (seriesName) => seriesName + 'teste'
+              formatter: (seriesName) => seriesName
             }
           },
           z: {
@@ -65,14 +72,12 @@ export default {
         },
         dataLabels: {
           enabled: true,
-          textAnchor: 'center',
-          formatter (val, opt) {
-            return val > 0 ? 'R$: ' + val : val
-          },
+          textAnchor: 'middle',
+          formatter: (val, opt) => val > 0 ? 'R$: ' + val : val,
           offsetX: 0
         },
         title: {
-          text: 'Total de Vendas do mes de outubro',
+          text: 'Total de Vendas',
           align: 'left',
           margin: 10,
           offsetX: 0,
@@ -100,6 +105,9 @@ export default {
           y: this.getAmounthOfDay(index + 1)
         }
       })
+      //   .filter(item => {
+      //   return item.y !== 0
+      // })
     },
 
     getAmounthOfDay (day) {
@@ -108,7 +116,7 @@ export default {
       })
         .reduce((acc, cur) => {
           return acc + cur.service.price
-        }, 0)
+        }, 0.0)
     }
   }
 }

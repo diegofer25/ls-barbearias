@@ -19,7 +19,7 @@
             <q-tabs color="teal">
               <q-tab slot="title" name="tab-1" label="Diário" icon="today" />
               <q-tab slot="title" name="tab-2" label="Semanal" icon="date_range" />
-              <q-tab default slot="title" name="tab-3" label="Mensál" icon="calendar_today"/>
+              <q-tab default slot="title" name="tab-3" label="Mensal" icon="calendar_today"/>
 
               <q-tab-pane name="tab-1">
                 Total de hoje {{ dateToString(selectedDate, 'xx/xx') }}: R$ {{ sumPaymentsList(filterDaily()) }}
@@ -30,7 +30,7 @@
                 R$ {{ sumPaymentsList(filterWeek()) }}
               </q-tab-pane>
               <q-tab-pane name="tab-3">
-                Total do mes de {{ mounths[parseInt(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
+                Total do mes de {{ mounths[parseFloat(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
                 <mounthsales :payments="filterMounth" :date="selectedDate"/>
               </q-tab-pane>
             </q-tabs>
@@ -119,7 +119,7 @@ export default {
     sumPaymentsList (list) {
       return list.reduce((total, payment) => {
         return total + payment.service.price
-      }, 0)
+      }, 0.0)
     },
 
     filterWeek () {
