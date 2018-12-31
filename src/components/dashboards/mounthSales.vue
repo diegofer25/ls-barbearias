@@ -1,7 +1,7 @@
 <template>
   <div class="row justify-around">
     <div class="col-sm-12">
-      <apexcharts width="100%" type="area" :options="options" :series="series"></apexcharts>
+      <apexcharts height="350px" type="area" :options="options" :series="series"></apexcharts>
     </div>
   </div>
 </template>
@@ -31,6 +31,9 @@ export default {
             }
           }
         },
+        xaxis: {
+          categories: this.formatData(this.date, 'x')
+        },
         tooltip: {
           enabled: true,
           shared: true,
@@ -52,22 +55,6 @@ export default {
             title: {
               formatter: (seriesName) => seriesName
             }
-          },
-          z: {
-            formatter: undefined,
-            title: 'Size: '
-          },
-          marker: {
-            show: true
-          },
-          items: {
-            display: 'flex'
-          },
-          fixed: {
-            enabled: false,
-            position: 'topRight',
-            offsetX: 0,
-            offsetY: 0
           }
         },
         dataLabels: {
@@ -75,39 +62,24 @@ export default {
           textAnchor: 'middle',
           formatter: (val, opt) => val > 0 ? 'R$: ' + val : val,
           offsetX: 0
-        },
-        title: {
-          text: 'Total de Vendas',
-          align: 'left',
-          margin: 10,
-          offsetX: 0,
-          offsetY: 0,
-          floating: false,
-          style: {
-            fontSize: '22px',
-            color: 'black'
-          }
         }
       },
       series: [{
         name: 'Total do dia',
-        data: this.formatData(this.date)
+        data: this.formatData(this.date, 'y')
       }]
     }
   },
   methods: {
-    formatData (date) {
+    formatData (date, XY) {
       const d = new Date(date)
       const days = Array.from({ length: new Date(d.getFullYear(), d.getMonth(), 0).getDate() })
       return days.map((day, index) => {
         return {
-          x: index + 1,
+          x: 'Dia ' + (index + 1),
           y: this.getAmounthOfDay(index + 1)
         }
-      })
-      //   .filter(item => {
-      //   return item.y !== 0
-      // })
+      }).filter(({ y }) => y !== 0).map(obj => obj[XY])
     },
 
     getAmounthOfDay (day) {

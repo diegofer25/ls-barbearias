@@ -26,7 +26,7 @@
               </q-tab-pane>
               <q-tab-pane name="tab-2">
                 Total da semana referentes os dias
-                {{ dateToString(selectedDate, 'xx') + ' e ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6)  }}:
+                {{ dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6)  }}:
                 R$ {{ sumPaymentsList(filterWeek()) }}
               </q-tab-pane>
               <q-tab-pane name="tab-3">
@@ -76,8 +76,8 @@ export default {
   },
   data () {
     return {
-      date: new Date(),
-      selectedDate: new Date(),
+      date: new Date('10/01/2018'),
+      selectedDate: new Date('10/01/2018'),
       pickingDate: false,
       datepicker: false
     }
@@ -124,11 +124,13 @@ export default {
 
     filterWeek () {
       const vm = this
-      return vm.getPayments.filter(payment => {
+      const week = vm.getPayments.filter(payment => {
         return vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx') &&
         vm.dateToString(payment.timestamp, 'xx') >= vm.dateToString(vm.selectedDate, 'xx') &&
         vm.dateToString(payment.timestamp, 'xx') < (vm.dateToString(vm.selectedDate, 'xx') + 7)
       })
+      console.log(week)
+      return week
     },
 
     filterDaily () {
