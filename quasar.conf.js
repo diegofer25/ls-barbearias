@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     plugins: [
       'axios',
       'vuelidate',
-      'apexcharts'
+      'apexcharts',
+      'xlsx'
     ],
     css: [
       'app.styl'

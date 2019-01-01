@@ -1,5 +1,5 @@
-import mounthSales from './mounthSales.vue'
+import payments from './payments-chart.vue'
 
 export default {
-  mounthSales
+  payments
 }

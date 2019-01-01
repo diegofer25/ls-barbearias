@@ -56,6 +56,9 @@ plugins.push(pluginVuelidate)
 import pluginApexcharts from 'src/plugins/apexcharts'
 plugins.push(pluginApexcharts)
 
+import pluginXlsx from 'src/plugins/xlsx'
+plugins.push(pluginXlsx)
+
 plugins.forEach(plugin => plugin({ app, router, store, Vue }))
 
 

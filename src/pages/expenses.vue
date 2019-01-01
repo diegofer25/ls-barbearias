@@ -36,7 +36,7 @@
           <div class="col-12 shadow-5">
             <q-tabs
               color="teal" v-model="selectedTab" class="animated zoomIn"
-              v-if="filterPerMounthAndYear(getExpenses).length || (selectedMounth > new Date().getMonth() || selectedYear > new Date().getFullYear())"
+              v-if="filterPerMounthAndYear(getExpenses).length || (selectedMounth > (new Date().getMonth() + 1) || selectedYear > new Date().getFullYear())"
             >
               <q-tab
                 v-for="(cat, index) in filterPerMounthAndYear(getExpenses)"
@@ -49,7 +49,7 @@
               />
               <q-tab
                 slot="title" name="tab-add" icon="add_circle_outline" :default="filterPerMounthAndYear(getExpenses).length === 0"
-                v-if="selectedMounth > new Date().getMonth() || selectedYear > new Date().getFullYear()"/>
+                v-if="selectedMounth > (new Date().getMonth() + 1) || selectedYear > new Date().getFullYear()"/>
               <q-tab-pane
                 v-for="(cat, index) in filterPerMounthAndYear(getExpenses)" :key="index"
                 :name="'tab-' + (index + 1)" class="animated fadeIn"

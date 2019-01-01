@@ -24,25 +24,42 @@
               <q-tab-pane name="tab-1">
                 <div class="row">
                   <div class="col-12">
-                    Total de hoje {{ dateToString(selectedDate, 'xx/xx') }}: R$ {{ sumPaymentsList(filterDaily()) }}
+                    <payments-chart
+                      v-if="refreshChart"
+                      :payments="filterDaily()"
+                      :date="selectedDate"
+                      exportTitle="Diário"
+                      :textTitle="formatTextTitle('Diário')"
+                      :referer="'do dia ' + dateToString(selectedDate, 'xx/xx/xxxx')"
+                    />
                   </div>
                 </div>
               </q-tab-pane>
               <q-tab-pane name="tab-2">
                 <div class="row">
                   <div class="col-12">
-                    Total da semana referentes os dias
-                    {{ endOfMounth ? (days - 7) + ' a ' + days : dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6)  }}:
-                    R$ {{ sumPaymentsList(filterWeek()) }}
-                    <mounthsales v-if="refreshChart" :payments="filterWeek()" :date="selectedDate"/>
+                    <payments-chart
+                      v-if="refreshChart"
+                      :payments="filterWeek()"
+                      :date="selectedDate"
+                      exportTitle="Semanal"
+                      :textTitle="formatTextTitle('Semanal')"
+                      :referer="'dos dias ' + endOfMounth ? (days - 7) + ' a ' + days : dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6) + ' de ' + dateToString(selectedDate, 'xx/xxxx')"
+                    />
                   </div>
                 </div>
               </q-tab-pane>
               <q-tab-pane name="tab-3">
                 <div class="row">
                   <div class="col-12">
-                    Total do mes de {{ mounths[parseFloat(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
-                    <mounthsales v-if="refreshChart" :payments="filterMounth()" :date="selectedDate"/>
+                    <payments-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Mensal"
+                      :textTitle="formatTextTitle()"
+                      :referer="'do mes ' + dateToString(selectedDate, 'xx/xxxx')"
+                    />
                   </div>
                 </div>
               </q-tab-pane>
@@ -132,7 +149,7 @@ export default {
 
     dateToString (date, format) {
       const d = new Date(date), vm = this
-      if (format === 'xx/xxxx') return vm.formatDate(d.getMonth()) + '/' + d.getFullYear()
+      if (format === 'xx/xxxx') return vm.formatDate(d.getMonth() + 1) + '/' + d.getFullYear()
       else if (format === 'xx/xx') return vm.formatDate(d.getDate()) + '/' + vm.formatDate(d.getMonth() + 1)
       else if (format === 'xx') return vm.formatDate(d.getDate())
       else if (format === 'xxxx') return d.getFullYear()
@@ -156,7 +173,7 @@ export default {
         return (vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx') &&
         (parseInt(vm.dateToString(payment.timestamp, 'xx')) >= parseInt(vm.dateToString(vm.selectedDate, 'xx')) &&
         parseInt(vm.dateToString(payment.timestamp, 'xx')) < parseInt(vm.dateToString(vm.selectedDate, 'xx')) + 7)) ||
-        vm.endOfMounth ? parseInt(vm.dateToString(payment.timestamp, 'xx')) >= this.days - 7 : false
+        (vm.endOfMounth ? parseInt(vm.dateToString(payment.timestamp, 'xx')) >= this.days - 7 : false)
       })
     },
 
@@ -172,10 +189,24 @@ export default {
       return vm.getPayments.filter(payment => {
         return vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx')
       })
+    },
+
+    formatTextTitle (date) {
+      const vue = this
+      if (date === 'Semanal') {
+        return `Total da semana referentes os dias
+          ${vue.endOfMounth ? (vue.days - 7) + ' a ' + vue.days : vue.dateToString(vue.selectedDate, 'xx') + ' a ' + vue.formatDate(parseInt(vue.dateToString(vue.selectedDate, 'xx')) + 6) + ' de ' + vue.mounths[parseFloat(vue.dateToString(vue.selectedDate))]}:
+          R$ ${vue.sumPaymentsList(vue.filterWeek())}`
+      } else if (date === 'Diário') {
+        return `Total do dia ${vue.dateToString(vue.selectedDate, 'xx/xx/xxxx')}: R$ ${vue.sumPaymentsList(vue.filterDaily())}`
+      } else {
+        return `Total do mes de ${vue.mounths[parseFloat(vue.dateToString(vue.selectedDate))]}: R$ ${vue.sumPaymentsList(vue.filterMounth())}`
+      }
     }
   },
+
   components: {
-    mounthsales: dashboards.mounthSales
+    'payments-chart': dashboards.payments
   }
 }
 </script>
