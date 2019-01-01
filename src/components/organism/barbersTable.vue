@@ -44,7 +44,7 @@
           @escape-key="editing = !editing"
           @cancel="editing = !editing"
         >
-          <span slot="title">Editar Barbere</span>
+          <span slot="title">Editar Barbeiro</span>
 
           <span slot="message">Edite as informações</span>
 

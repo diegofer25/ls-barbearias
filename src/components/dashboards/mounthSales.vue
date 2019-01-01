@@ -1,6 +1,6 @@
 <template>
   <div class="row justify-around">
-    <div class="col-sm-12">
+    <div class="col-sm-12" id="chart">
       <apexcharts height="350px" type="area" :options="options" :series="series"></apexcharts>
     </div>
   </div>
@@ -27,41 +27,17 @@ export default {
         yaxis: {
           labels: {
             formatter: function (value) {
-              return 'R$ ' + value
+              return 'R$ ' + value.toFixed(2)
             }
           }
         },
         xaxis: {
-          categories: this.formatData(this.date, 'x')
-        },
-        tooltip: {
-          enabled: true,
-          shared: true,
-          followCursor: false,
-          intersect: false,
-          inverseOrder: false,
-          custom: undefined,
-          fillSeriesColor: false,
-          onDatasetHover: {
-            highlightDataSeries: false
-          },
-          x: {
-            show: true,
-            format: 'dd MMM',
-            formatter: (val) => 'Dia ' + val
-          },
-          y: {
-            formatter: undefined,
-            title: {
-              formatter: (seriesName) => seriesName
+          categories: this.formatData(this.date, 'x'),
+          labels: {
+            formatter: function (value) {
+              return 'Dia ' + value
             }
           }
-        },
-        dataLabels: {
-          enabled: true,
-          textAnchor: 'middle',
-          formatter: (val, opt) => val > 0 ? 'R$: ' + val : val,
-          offsetX: 0
         }
       },
       series: [{
@@ -73,17 +49,17 @@ export default {
   methods: {
     formatData (date, XY) {
       const d = new Date(date)
-      const days = Array.from({ length: new Date(d.getFullYear(), d.getMonth(), 0).getDate() })
+      const days = Array.from({ length: new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() })
       return days.map((day, index) => {
         return {
-          x: 'Dia ' + (index + 1),
+          x: (index + 1),
           y: this.getAmounthOfDay(index + 1)
         }
       }).filter(({ y }) => y !== 0).map(obj => obj[XY])
     },
 
     getAmounthOfDay (day) {
-      return this.payments().filter(payment => {
+      return this.payments.filter(payment => {
         return new Date(payment.timestamp).toLocaleDateString() === new Date(String((new Date(this.date).getMonth() + 1) + '/' + day + '/' + new Date(this.date).getFullYear())).toLocaleDateString()
       })
         .reduce((acc, cur) => {

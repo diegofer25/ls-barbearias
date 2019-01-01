@@ -22,17 +22,33 @@
               <q-tab default slot="title" name="tab-3" label="Mensal" icon="calendar_today"/>
 
               <q-tab-pane name="tab-1">
-                Total de hoje {{ dateToString(selectedDate, 'xx/xx') }}: R$ {{ sumPaymentsList(filterDaily()) }}
+                <div class="row">
+                  <div class="col-12">
+                    Total de hoje {{ dateToString(selectedDate, 'xx/xx') }}: R$ {{ sumPaymentsList(filterDaily()) }}
+                  </div>
+                </div>
               </q-tab-pane>
               <q-tab-pane name="tab-2">
-                Total da semana referentes os dias
-                {{ dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6)  }}:
-                R$ {{ sumPaymentsList(filterWeek()) }}
+                <div class="row">
+                  <div class="col-12">
+                    Total da semana referentes os dias
+                    {{ endOfMounth ? (days - 7) + ' a ' + days : dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6)  }}:
+                    R$ {{ sumPaymentsList(filterWeek()) }}
+                    <mounthsales v-if="refreshChart" :payments="filterWeek()" :date="selectedDate"/>
+                  </div>
+                </div>
               </q-tab-pane>
               <q-tab-pane name="tab-3">
-                Total do mes de {{ mounths[parseFloat(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
-                <mounthsales :payments="filterMounth" :date="selectedDate"/>
+                <div class="row">
+                  <div class="col-12">
+                    Total do mes de {{ mounths[parseFloat(dateToString(selectedDate))] }}: R$ {{ sumPaymentsList(filterMounth()) }}
+                    <mounthsales v-if="refreshChart" :payments="filterMounth()" :date="selectedDate"/>
+                  </div>
+                </div>
               </q-tab-pane>
+              <q-inner-loading :visible="pickingDate">
+                <q-spinner-facebook size="100px" color="teal"></q-spinner-facebook>
+              </q-inner-loading>
             </q-tabs>
           </div>
         </div>
@@ -46,11 +62,11 @@
     >
       <div class="row">
         <div class="col-12">
-          <q-datetime-picker v-model="date" type="date" @change="datepicker = !datepicker" color="teal"/>
+          <q-datetime-picker v-model="date" type="date" color="teal"/>
         </div>
       </div>
       <div class="row justify-around">
-        <q-btn class="q-my-sm" outline color="negative" @click.stop="datepicker = !datepicker">CANCELAR</q-btn>
+        <q-btn class="q-my-sm" outline color="negative" @click.stop="cancelPick">CANCELAR</q-btn>
         <q-btn class="q-my-sm" color="positive" @click.stop="selectDate">CONFIRMAR</q-btn>
       </div>
     </q-modal>
@@ -72,22 +88,33 @@ export default {
       'getPayments',
       'getSchedules',
       'getExpenses'
-    ])
+    ]),
+    days () {
+      return new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() + 1, 0).getDate()
+    },
+    endOfMounth () {
+      return (new Date(this.selectedDate).getDate() + 7) > this.days
+    }
   },
   data () {
     return {
-      date: new Date('10/01/2018'),
-      selectedDate: new Date('10/01/2018'),
+      date: new Date(),
+      selectedDate: new Date(),
       pickingDate: false,
-      datepicker: false
+      datepicker: false,
+      refreshChart: true
     }
   },
   methods: {
     selectDate () {
-      if (this.dateToString(this.selectedDate) !== this.dateToString(this.date)) {
+      if (this.dateToString(this.selectedDate, 'xx/xx/xxxx') !== this.dateToString(this.date, 'xx/xx/xxxx')) {
         this.selectedDate = this.date
+        this.refreshChart = false
+        setTimeout(() => {
+          this.refreshChart = true
+        }, 100)
       } else {
-        this.selectedDate = this.date
+        this.date = this.selectedDate
       }
       this.datepicker = !this.datepicker
     },
@@ -98,6 +125,7 @@ export default {
     },
 
     cancelPick () {
+      this.date = this.selectedDate
       this.datepicker = false
       this.pickingDate = false
     },
@@ -124,13 +152,12 @@ export default {
 
     filterWeek () {
       const vm = this
-      const week = vm.getPayments.filter(payment => {
-        return vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx') &&
-        vm.dateToString(payment.timestamp, 'xx') >= vm.dateToString(vm.selectedDate, 'xx') &&
-        vm.dateToString(payment.timestamp, 'xx') < (vm.dateToString(vm.selectedDate, 'xx') + 7)
+      return vm.getPayments.filter(payment => {
+        return (vm.dateToString(payment.timestamp, 'xx/xxxx') === vm.dateToString(vm.selectedDate, 'xx/xxxx') &&
+        (parseInt(vm.dateToString(payment.timestamp, 'xx')) >= parseInt(vm.dateToString(vm.selectedDate, 'xx')) &&
+        parseInt(vm.dateToString(payment.timestamp, 'xx')) < parseInt(vm.dateToString(vm.selectedDate, 'xx')) + 7)) ||
+        vm.endOfMounth ? parseInt(vm.dateToString(payment.timestamp, 'xx')) >= this.days - 7 : false
       })
-      console.log(week)
-      return week
     },
 
     filterDaily () {

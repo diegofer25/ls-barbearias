@@ -55,7 +55,7 @@
       </q-layout-header>
 
       <q-layout-drawer
-        v-model="leftDrawerOpen"
+        v-model="leftDrawerOpen" behavior="mobile"
       >
         <div class="text-center q-pa-sm">
           <span class="q-display-1 text-weight-thin">Menu</span>
