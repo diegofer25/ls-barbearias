@@ -20,7 +20,7 @@
             color="teal"
             @click="openModal"
             size="lg"
-            icon="schedule"
+            icon="alarm_add"
           ><span class="q-pa-md">Agendar Cliente</span></q-btn>
         </div>
         <div class="row" v-if="scheduling">

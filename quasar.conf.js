@@ -99,7 +99,8 @@ module.exports = function (ctx) {
         'QTabPane',
         'QRouteTab',
         'QAutocomplete',
-        'QItemTile'
+        'QItemTile',
+        'QKnob'
       ],
       directives: [
         'Ripple',

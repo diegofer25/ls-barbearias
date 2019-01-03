@@ -180,6 +180,7 @@ export default {
     if (this.$q.platform.is.mobile) this.$q.fullscreen.request()
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
+        this.setUser(cache.get('user'))
         this.startApplication()
       } else {
         this.$router.push({ path: '/' })
@@ -193,17 +194,17 @@ export default {
       'setBarbers',
       'setPayments',
       'setSchedules',
-      'setExpenses'
+      'setExpenses',
+      'setUser'
     ]),
 
     logout () {
-      const notify = this.$q.notify
       firebase.auth().signOut().then(() => {
         cache.del('user')
         location.reload()
       }, error => {
         console.log(error)
-        notify('Erro na comunicação com o servidor')
+        this.$q.notify('Erro na comunicação com o servidor')
       })
     },
 

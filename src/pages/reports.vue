@@ -61,6 +61,16 @@
                       :referer="'do mes ' + dateToString(selectedDate, 'xx/xxxx')"
                     />
                   </div>
+                  <hr>
+                  <div class="col-12">
+                    <expenses-chart
+                      v-if="refreshChart"
+                      :expenses="getExpenses"
+                      :date="selectedDate"
+                      exportTitle="Despesas"
+                      textTitle="Despesas"
+                    />
+                  </div>
                 </div>
               </q-tab-pane>
               <q-inner-loading :visible="pickingDate">
@@ -162,9 +172,9 @@ export default {
     },
 
     sumPaymentsList (list) {
-      return list.reduce((total, payment) => {
+      return parseFloat(list.reduce((total, payment) => {
         return total + payment.service.price
-      }, 0.0)
+      }, 0.0)).toFixed(2)
     },
 
     filterWeek () {
@@ -206,7 +216,8 @@ export default {
   },
 
   components: {
-    'payments-chart': dashboards.payments
+    'payments-chart': dashboards.payments,
+    'expenses-chart': dashboards.expenses
   }
 }
 </script>

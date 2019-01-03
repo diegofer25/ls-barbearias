@@ -5,7 +5,7 @@ export default {
     return db.collection('expenses').add(expense)
       .then((docRef) => {
         return {
-          message: 'Categoria de despesa cadastrada',
+          message: 'Despesa cadastrada',
           id: docRef.id
         }
       })
@@ -32,7 +32,7 @@ export default {
     return db.collection('expenses').doc(expense.id).set(expense)
       .then(() => {
         return {
-          message: 'Categoria de despesa alterada'
+          message: 'Despesa alterada'
         }
       })
       .catch(processError)
@@ -42,7 +42,7 @@ export default {
     return db.collection('expenses').doc(id).delete()
       .then(() => {
         return {
-          message: 'Categoria de despesa Deletada'
+          message: 'Despesa Deletada'
         }
       })
       .catch(processError)

@@ -140,23 +140,25 @@ export default {
     deleteBarber () {
       const vm = this
       this.loading = true
-      db.deleteBarber(vm.selected[0].id)
-        .then((res) => {
-          this.$q.notify({
-            message: res.message,
-            timeout: 5000,
-            type: 'positive',
-            color: 'positive',
-            icon: 'done_all',
-            position: 'bottom',
-            actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+      if (confirm('Deseja mesmo excluir este barbeiro?')) {
+        db.deleteBarber(vm.selected[0].id)
+          .then((res) => {
+            this.$q.notify({
+              message: res.message,
+              timeout: 5000,
+              type: 'positive',
+              color: 'positive',
+              icon: 'done_all',
+              position: 'bottom',
+              actions: [{ label: 'Fechar', icon: 'close', noDismiss: true }]
+            })
+            vm.setBarbers(vm.getBarbers.filter((barber) => {
+              return barber.id !== vm.selected[0].id
+            }))
+            vm.selected = []
           })
-          vm.setBarbers(vm.getBarbers.filter((barber) => {
-            return barber.id !== vm.selected[0].id
-          }))
-          this.loading = false
-          vm.selected = []
-        })
+      }
+      this.loading = false
     }
   }
 }

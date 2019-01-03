@@ -105,7 +105,7 @@
               <div class="col-12">
                 <div class="row">
                   <span class="q-headline col-12 text-right">Primeiro Login Detectado</span>
-                  <span class="q-subtitle col-12 text-right">Informe o campo abaixo</span>
+                  <span class="q-subtitle col-12 text-right">Informe os itens abaixo</span>
                 </div>
                 <div class="row q-py-md">
                   <q-input
@@ -116,6 +116,21 @@
                     color="teal-2"
                     dark
                   />
+                  <div class="col-12 q-mb-md">
+                    <div class="row justify-center">
+                      <span class="q-mb-sm">Qual a porcentagem que sua barbearia paga de comissão para os barbeiros?</span>
+                    </div>
+                    <div class="row justify-center">
+                      <q-knob
+                        v-model="percent"
+                        :min="0"
+                        :max="100"
+                        track-color="secondary"
+                      >
+                        {{ percent + '%' }}
+                      </q-knob>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="col-12">
@@ -124,6 +139,7 @@
                       color="teal"
                       round
                       icon="save"
+                      :disabled="!storeName || !percent || storeName.length < 3"
                       @click.stop="updateUser()"
                     />
                   </div>
@@ -141,7 +157,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { required, email, minLength, maxLength } from 'vuelidate/lib/validators'
 import cache from 'src/cache'
 import firebase from 'firebase'
@@ -161,7 +177,8 @@ export default {
       loading: false,
       visible: false,
       modal: false,
-      storeName: ''
+      storeName: '',
+      percent: 0
     }
   },
   validations: {
@@ -189,6 +206,7 @@ export default {
     ])
   },
   methods: {
+    ...mapActions('application', ['setUser']),
     submit () {
       const vm = this
       if (!vm.hasErro()) {
@@ -205,6 +223,7 @@ export default {
                     delete license.users
                     license.currentUser = vm.form.username
                     cache.set('user', license)
+                    vm.setUser(license)
                     if (license.storeName) vm.$router.push({ path: '/app' })
                     else vm.firstLogin(license)
                   } else {
@@ -257,15 +276,13 @@ export default {
       const vm = this
       vm.visible = true
       vm.user.storeName = vm.storeName
+      vm.user.percent = vm.percent
       vm.user.firstLoginDate = new Date().getTime()
       const db = firebase.firestore()
       db.settings(({ timestampsInSnapshots: true }))
       db.collection('users').doc(vm.user.email).update(vm.user)
         .then(() => {
           cache.set('user', vm.user)
-          vm.modal = false
-          vm.loading = false
-          vm.visible = false
           vm.$router.push({ path: '/app' })
         })
     },
@@ -274,7 +291,13 @@ export default {
       const vm = this
       vm.modal = false
       vm.loading = false
-      vm.$router.push({ path: '/app' })
+      firebase.auth().signOut().then(() => {
+        cache.del('user')
+        location.reload()
+      }, error => {
+        console.log(error)
+        this.$q.notify('Erro na comunicação com o servidor')
+      })
     },
 
     firstLogin (user) {
