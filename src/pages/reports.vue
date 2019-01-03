@@ -43,6 +43,24 @@
                     />
                   </div>
                   <div class="col-12 q-mb-md">
+                    <barbers-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
+                    <types-payments-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
                     <expenses-chart
                       v-if="refreshChart"
                       :expenses="getExpenses"
@@ -75,6 +93,24 @@
                     />
                   </div>
                   <div class="col-12 q-mb-md">
+                    <barbers-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
+                    <types-payments-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
                     <expenses-chart
                       v-if="refreshChart"
                       :expenses="getExpenses"
@@ -99,6 +135,24 @@
                   </div>
                   <div class="col-12 q-mb-md">
                     <services-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
+                    <barbers-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
+                    <types-payments-chart
                       v-if="refreshChart"
                       :payments="filterMounth()"
                       :date="selectedDate"
@@ -262,7 +316,9 @@ export default {
   components: {
     'payments-chart': dashboards.payments,
     'expenses-chart': dashboards.expenses,
-    'services-chart': dashboards.services
+    'services-chart': dashboards.services,
+    'barbers-chart': dashboards.barbers,
+    'types-payments-chart': dashboards.types
   }
 }
 </script>

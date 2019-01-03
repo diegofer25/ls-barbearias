@@ -20,7 +20,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'services-chart',
+  name: 'barber-chart',
   props: [
     'payments',
     'date'
@@ -37,7 +37,7 @@ export default {
           stackType: '100%'
         },
         title: {
-          text: 'Percentual de receita por serviço',
+          text: 'Percentual de receita por barbeiro',
           align: 'center',
           margin: 0,
           offsetX: 0,
@@ -241,7 +241,7 @@ export default {
             title: {
               formatter: (seriesName, opt) => {
                 const executions = vue.payments.filter(p => {
-                  return p.service.name === seriesName.replace(':', '') &&
+                  return p.barber.name === seriesName.replace(':', '') &&
                   new Date(p.timestamp).getDate() === opt.w.config.xaxis.categories[opt.dataPointIndex]
                 })
                 const brut = executions.reduce((acc, cur) => (acc + cur.service.price), 0.00)
@@ -273,19 +273,19 @@ export default {
   },
   mounted () {
     const vue = this
-    const services = []
+    const barbers = []
     vue.payments.map(payment => {
-      if (services.every(p => {
-        return p.service.name !== payment.service.name
-      })) services.push(payment)
+      if (barbers.every(p => {
+        return p.barber.id !== payment.barber.id
+      })) barbers.push(payment)
     })
-    vue.series = services.map(payment => {
+    vue.series = barbers.map(payment => {
       return {
-        name: payment.service.name,
+        name: payment.barber.name,
         data: vue.formatData(vue.date, 'date').map(day => {
           const { percent } = vue.getUser
           const total = vue.payments.filter(p => {
-            return p.service.name === payment.service.name && new Date(p.timestamp).toLocaleDateString() === day
+            return p.barber.name === payment.barber.name && new Date(p.timestamp).toLocaleDateString() === day
           }).reduce((acc, cur) => {
             return (acc + cur.service.price)
           }, 0.0)
@@ -335,11 +335,11 @@ export default {
     },
 
     formatDataToSheet () {
-      const header = ['Data', 'Serviço', 'Preço']
+      const header = ['Data', 'Barbeiro', 'Preço']
       const body = this.payments.map(payment => {
         return [
           new Date(payment.timestamp).toLocaleDateString(),
-          payment.service.name,
+          payment.barber.name,
           payment.service.price.toFixed(2)
         ]
       })
