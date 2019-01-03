@@ -14,11 +14,6 @@
         </div>
       </q-card>
     </div>
-    <div class="col-sm-12" v-else>
-      <div class="row justify-center">
-        <span class="q-title">Não houveram serviços executados</span>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -28,10 +23,7 @@ export default {
   name: 'services-chart',
   props: [
     'payments',
-    'date',
-    'exportTitle',
-    'referer',
-    'textTitle'
+    'date'
   ],
   computed: {
     ...mapGetters('application', ['getUser'])
@@ -43,6 +35,18 @@ export default {
         chart: {
           stacked: true,
           stackType: '100%'
+        },
+        title: {
+          text: 'Percentual de receita por serviço',
+          align: 'center',
+          margin: 0,
+          offsetX: 0,
+          offsetY: 0,
+          floating: true,
+          style: {
+            fontSize: '22px',
+            color: '#263238'
+          }
         },
         responsive: [{
           breakpoint: 480,
@@ -241,9 +245,9 @@ export default {
                   new Date(p.timestamp).getDate() === opt.w.config.xaxis.categories[opt.dataPointIndex]
                 })
                 const brut = executions.reduce((acc, cur) => (acc + cur.service.price), 0.00)
-                return `<b>${seriesName}</b>
+                return `<strong class="q-subheading">${seriesName}</strong >
                         <br>
-                        <span> ${executions.length > 1 ? 'Execuções' : 'Execução'}: <b>${executions.length}</b></span>
+                        <span>Quantidade: <b>${executions.length}</b></span>
                         <br>
                         <span>Receita Bruta: <b>R$ ${brut.toFixed(2)}</b></span>
                         <br>
@@ -325,7 +329,7 @@ export default {
       var ws = XLSX.utils.aoa_to_sheet(data)
       wb.Sheets['Relatório ' + title] = ws
       var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' })
-      saveAs(new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' }), 'Relatório ' + this.referer + '.xlsx')
+      saveAs(new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' }), 'Relatório ' + title + '.xlsx')
     },
 
     formatDataToSheet () {

@@ -42,6 +42,15 @@
                       textTitle="Serviços"
                     />
                   </div>
+                  <div class="col-12 q-mb-md">
+                    <expenses-chart
+                      v-if="refreshChart"
+                      :expenses="getExpenses"
+                      :date="selectedDate"
+                      exportTitle="Despesas"
+                      textTitle="Despesas"
+                    />
+                  </div>
                 </div>
               </q-tab-pane>
               <q-tab-pane name="tab-2">
@@ -63,6 +72,15 @@
                       :date="selectedDate"
                       exportTitle="Serviços"
                       textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
+                    <expenses-chart
+                      v-if="refreshChart"
+                      :expenses="getExpenses"
+                      :date="selectedDate"
+                      exportTitle="Despesas"
+                      textTitle="Despesas"
                     />
                   </div>
                 </div>

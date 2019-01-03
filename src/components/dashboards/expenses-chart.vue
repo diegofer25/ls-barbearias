@@ -70,7 +70,7 @@ export default {
             title: {
               formatter: (seriesName, opt) => {
                 const deadline = new Date(vue.expenses[opt.seriesIndex].deadline)
-                return `<b>${seriesName}</b>
+                return `<strong class="q-subheading">${seriesName}</strong >
                         <br>
                         <span>Paga: <b>${vue.expenses[opt.seriesIndex].payed ? 'Sim' : 'Não'}</b></span>
                         <br>
@@ -211,7 +211,7 @@ export default {
                 var list = []
                 if (seriesName === 'A vencer') list = vue.expenses.filter(e => new Date(e.deadline).getTime() >= new Date().getTime())
                 else list = vue.expenses.filter(e => new Date(e.deadline).getTime() < new Date().getTime())
-                return `<b>${seriesName}:</b>
+                return `<b class="q-subheading">${seriesName}:</b>
                         <br>
                         <span>${list.map(i => i.title + ': <b>' + new Date(i.deadline).toLocaleDateString() + '</b>').join('<br>')}</span>
                         <br>

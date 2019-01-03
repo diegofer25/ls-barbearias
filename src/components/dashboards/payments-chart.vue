@@ -14,11 +14,11 @@
         </div>
       </q-card>
     </div>
-    <div class="col-sm-12" v-else>
+    <q-card class="shadow-8 col-sm-12 q-py-md" v-else>
       <div class="row justify-center">
         <span class="q-title">Não houveram recebimentos {{ exportTitle === 'Diário' ? 'neste dia' : exportTitle === 'Semanal' ? 'nesta semana' : 'neste mes' }}</span>
       </div>
-    </div>
+    </q-card>
   </div>
 </template>
 
