@@ -25,4 +25,5 @@ database.rules.json
 firebase.json
 firestore.rules
 firestore.indexes.json
+firebase-debug.log
 /public
