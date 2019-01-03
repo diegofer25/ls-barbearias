@@ -76,6 +76,10 @@
                 <q-item-side icon="sync" />
                 <q-item-main label="Sincronizar" sublabel="Atualiza dados" />
               </q-item>
+              <q-item @click.native="downloadTV">
+                <q-item-side icon="arrow_downward" />
+                <q-item-main label="Suporte" sublabel="Download do assistente" />
+              </q-item>
             </q-list>
           </q-collapsible>
           <q-item @click.native="logout">
@@ -197,6 +201,10 @@ export default {
       'setExpenses',
       'setUser'
     ]),
+
+    downloadTV () {
+      window.open('https://download.teamviewer.com/download/TeamViewerQS.exe', '_blank')
+    },
 
     logout () {
       firebase.auth().signOut().then(() => {
