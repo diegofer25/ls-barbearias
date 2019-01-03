@@ -45,7 +45,7 @@
                   <div class="col-12 q-mb-md">
                     <barbers-chart
                       v-if="refreshChart"
-                      :payments="filterMounth()"
+                      :payments="filterDaily()"
                       :date="selectedDate"
                       exportTitle="Serviços"
                       textTitle="Serviços"
@@ -54,7 +54,7 @@
                   <div class="col-12 q-mb-md">
                     <types-payments-chart
                       v-if="refreshChart"
-                      :payments="filterMounth()"
+                      :payments="filterDaily()"
                       :date="selectedDate"
                       exportTitle="Serviços"
                       textTitle="Serviços"
@@ -95,7 +95,7 @@
                   <div class="col-12 q-mb-md">
                     <barbers-chart
                       v-if="refreshChart"
-                      :payments="filterMounth()"
+                      :payments="filterWeek()"
                       :date="selectedDate"
                       exportTitle="Serviços"
                       textTitle="Serviços"
@@ -104,7 +104,7 @@
                   <div class="col-12 q-mb-md">
                     <types-payments-chart
                       v-if="refreshChart"
-                      :payments="filterMounth()"
+                      :payments="filterWeek()"
                       :date="selectedDate"
                       exportTitle="Serviços"
                       textTitle="Serviços"
