@@ -23,7 +23,7 @@
 
               <q-tab-pane name="tab-1">
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-12 q-mb-md">
                     <payments-chart
                       v-if="refreshChart"
                       :payments="filterDaily()"
@@ -33,11 +33,20 @@
                       :referer="'do dia ' + dateToString(selectedDate, 'xx/xx/xxxx')"
                     />
                   </div>
+                  <div class="col-12 q-mb-md">
+                    <services-chart
+                      v-if="refreshChart"
+                      :payments="filterDaily()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
                 </div>
               </q-tab-pane>
               <q-tab-pane name="tab-2">
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-12 q-mb-md">
                     <payments-chart
                       v-if="refreshChart"
                       :payments="filterWeek()"
@@ -47,11 +56,20 @@
                       :referer="'dos dias ' + endOfMounth ? (days - 7) + ' a ' + days : dateToString(selectedDate, 'xx') + ' a ' + formatDate(parseInt(dateToString(selectedDate, 'xx')) + 6) + ' de ' + dateToString(selectedDate, 'xx/xxxx')"
                     />
                   </div>
+                  <div class="col-12 q-mb-md">
+                    <services-chart
+                      v-if="refreshChart"
+                      :payments="filterWeek()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
                 </div>
               </q-tab-pane>
               <q-tab-pane name="tab-3">
                 <div class="row">
-                  <div class="col-12">
+                  <div class="col-12 q-mb-md">
                     <payments-chart
                       v-if="refreshChart"
                       :payments="filterMounth()"
@@ -61,8 +79,16 @@
                       :referer="'do mes ' + dateToString(selectedDate, 'xx/xxxx')"
                     />
                   </div>
-                  <hr>
-                  <div class="col-12">
+                  <div class="col-12 q-mb-md">
+                    <services-chart
+                      v-if="refreshChart"
+                      :payments="filterMounth()"
+                      :date="selectedDate"
+                      exportTitle="Serviços"
+                      textTitle="Serviços"
+                    />
+                  </div>
+                  <div class="col-12 q-mb-md">
                     <expenses-chart
                       v-if="refreshChart"
                       :expenses="getExpenses"
@@ -217,7 +243,8 @@ export default {
 
   components: {
     'payments-chart': dashboards.payments,
-    'expenses-chart': dashboards.expenses
+    'expenses-chart': dashboards.expenses,
+    'services-chart': dashboards.services
   }
 }
 </script>

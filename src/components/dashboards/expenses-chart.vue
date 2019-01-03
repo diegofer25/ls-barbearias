@@ -66,7 +66,19 @@ export default {
         tooltip: {
           enabled: true,
           y: {
-            formatter: (val) => 'R$ ' + (val ? val.toFixed(2) : val)
+            formatter: (val) => 'R$ ' + (val ? val.toFixed(2) : val),
+            title: {
+              formatter: (seriesName, opt) => {
+                const deadline = new Date(vue.expenses[opt.seriesIndex].deadline)
+                return `<b>${seriesName}</b>
+                        <br>
+                        <span>Paga: <b>${vue.expenses[opt.seriesIndex].payed ? 'Sim' : 'Não'}</b></span>
+                        <br>
+                        <span>Vencida: <b>${deadline.getTime() < new Date().getTime() ? 'Sim, dia ' + deadline.toLocaleDateString() : 'Não'}</b></span>
+                        <br>
+                        <span>Valor: </span>`
+              }
+            }
           }
         },
         legend: {
@@ -193,7 +205,19 @@ export default {
         tooltip: {
           enabled: true,
           y: {
-            formatter: (val) => 'R$ ' + (val ? val.toFixed(2) : val)
+            formatter: (val) => 'R$ ' + (val ? val.toFixed(2) : val),
+            title: {
+              formatter: (seriesName, opt) => {
+                var list = []
+                if (seriesName === 'A vencer') list = vue.expenses.filter(e => new Date(e.deadline).getTime() >= new Date().getTime())
+                else list = vue.expenses.filter(e => new Date(e.deadline).getTime() < new Date().getTime())
+                return `<b>${seriesName}:</b>
+                        <br>
+                        <span>${list.map(i => i.title + ': <b>' + new Date(i.deadline).toLocaleDateString() + '</b>').join('<br>')}</span>
+                        <br>
+                        <span>Total: </span>`
+              }
+            }
           }
         },
         colors: ['#4CAF50', '#F44336'],
@@ -215,7 +239,7 @@ export default {
             horizontal: 1
           }
         },
-        labels: ['A vencer', 'Vencido'],
+        labels: ['A vencer', 'Vencida'],
         title: {
           text: 'Total de despesas com vencimento: R$ ' + this.expenses.filter(e => e.deadline).reduce((acc, cur) => {
             return (acc + cur.value)
@@ -252,7 +276,6 @@ export default {
       const inDay = this.expenses.filter(e => new Date(e.deadline).getTime() >= new Date().getTime()).reduce((acc, cur) => {
         return (acc + cur.value)
       }, 0.0)
-      console.log(late, inDay)
       return [inDay, late]
     },
 
