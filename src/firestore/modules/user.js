@@ -3,20 +3,24 @@ import db from 'src/firestore/init'
 export default {
   getUser: () => {
     return db.get().then(doc => {
-      if (doc.exists) {
-        return doc.data()
+      if (!doc.empty) {
+        const license = doc.data()
+        Object.keys(license.users).map(key => {
+          delete license.users[key].pass
+        })
+        return license
       } else {
         return {}
       }
     }).catch(processError)
   },
 
-  setUset: (user) => {
+  setUser: (user) => {
     return db.set(user).then(() => {
       return {
         message: 'Informações de usuário salvas!'
       }
-    })
+    }).catch(processError)
   }
 }
 

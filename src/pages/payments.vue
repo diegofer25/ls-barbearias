@@ -6,7 +6,7 @@
     <div class="row">
       <payment v-if="paying" @onfinish="finishAdding" />
     </div>
-    <div class='row'>
+    <div class="row">
       <div class='col-sm-12 col-lg-6 q-mt-lg'>
         <div class="row" v-if="!paying">
           <q-btn

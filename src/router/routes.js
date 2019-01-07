@@ -23,9 +23,7 @@ export default [
       { path: 'reports', component: () => import('pages/reports') },
       { path: 'expenses', component: () => import('pages/expenses') }
     ]
-  },
-
-  { // Always leave this as last one
+  }, {
     path: '*',
     component: () => import('pages/404')
   }

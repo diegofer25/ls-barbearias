@@ -5,6 +5,10 @@ export default {
     state.user = user
   },
 
+  setUsers: (state, users) => {
+    state.users = users
+  },
+
   setForm: (state, newForm) => {
     state.form = newForm
   },

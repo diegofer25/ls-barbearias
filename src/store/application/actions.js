@@ -3,6 +3,10 @@ export default {
     commit('setUser', payload)
   },
 
+  setUsers: ({ commit }, payload) => {
+    commit('setUsers', payload)
+  },
+
   setForm: ({ commit }, payload) => {
     commit('setForm', payload)
   },

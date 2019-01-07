@@ -46,7 +46,6 @@
           </q-toolbar-title>
 
           <q-btn
-            v-if="!$q.platform.is.mobile"
             flat round dense
             :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
             @click.native="$q.fullscreen.toggle()"
@@ -65,8 +64,7 @@
           link
           inset-delimiter
         >
-          <q-item v-for="item of menu" :key="item.label"
-            @click.native="goto(item.action)">
+          <q-item v-for="item of menu" :key="item.label" @click.native="goto(item.action)" v-show="item.condition">
             <q-item-side :icon="item.icon" />
             <q-item-main :label="item.label" :sublabel="item.subLabel" />
           </q-item>
@@ -111,64 +109,6 @@ import firebase from 'firebase'
 
 export default {
   name: 'LayoutDefault',
-  data () {
-    return {
-      storeName: cache.get('user').storeName,
-      leftDrawerOpen: this.$q.platform.is.desktop,
-      loading: true,
-      year: new Date().getFullYear(),
-      menu: [
-        {
-          icon: 'home',
-          label: 'Home',
-          subLabel: 'Informações Gerais',
-          action: '/app'
-        },
-        {
-          icon: 'monetization_on',
-          label: 'Pagamentos',
-          subLabel: 'Pagamentos e Comissões',
-          action: '/app/payments'
-        },
-        {
-          icon: 'account_circle',
-          label: 'Clientes',
-          subLabel: 'Gerenciar Clientes',
-          action: '/app/clients'
-        },
-        {
-          icon: 'group',
-          label: 'Barbeiros',
-          subLabel: 'Gerenciar Barbeiros',
-          action: '/app/barbers'
-        },
-        {
-          icon: 'import_contacts',
-          label: 'Agenda',
-          subLabel: 'Agenda dos Barbeiros',
-          action: '/app/shedule'
-        },
-        {
-          icon: 'book',
-          label: 'Catálogo de Serviços',
-          subLabel: 'Gerenciar Serviços',
-          action: '/app/services'
-        },
-        {
-          icon: 'insert_chart',
-          label: 'Relatórios',
-          subLabel: 'Relatórios do sistema',
-          action: '/app/reports'
-        },
-        {
-          icon: 'money_off',
-          label: 'Despesas',
-          subLabel: 'Despesas da Barbearia',
-          action: '/app/expenses'
-        }
-      ]
-    }
-  },
   computed: {
     ...mapGetters('application', [
       'getIcons',
@@ -177,17 +117,89 @@ export default {
       'getBarbers',
       'getPayments',
       'getSchedules',
-      'getExpenses'
+      'getExpenses',
+      'getUser'
     ])
   },
-  mounted () {
-    if (this.$q.platform.is.mobile) this.$q.fullscreen.request()
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setUser(cache.get('user'))
-        this.startApplication()
-      } else {
-        this.$router.push({ path: '/' })
+  data () {
+    return {
+      storeName: cache.get('user').storeName,
+      leftDrawerOpen: this.$q.platform.is.desktop,
+      loading: true,
+      year: new Date().getFullYear(),
+      menu: [{
+        icon: 'home',
+        label: 'Home',
+        subLabel: 'Informações Gerais',
+        action: '/app',
+        condition: JSON.parse(localStorage.getItem('user')).currentUser.root
+      }, {
+        icon: 'monetization_on',
+        label: 'Pagamentos',
+        subLabel: 'Pagamentos e Comissões',
+        action: '/app/payments',
+        condition: true
+      }, {
+        icon: 'account_circle',
+        label: 'Clientes',
+        subLabel: 'Gerenciar Clientes',
+        action: '/app/clients',
+        condition: true
+      }, {
+        icon: 'group',
+        label: 'Barbeiros',
+        subLabel: 'Gerenciar Barbeiros',
+        action: '/app/barbers',
+        condition: true
+      }, {
+        icon: 'import_contacts',
+        label: 'Agenda',
+        subLabel: 'Agenda dos Barbeiros',
+        action: '/app/shedule',
+        condition: true
+      }, {
+        icon: 'book',
+        label: 'Catálogo de Serviços',
+        subLabel: 'Gerenciar Serviços',
+        action: '/app/services',
+        condition: true
+      }, {
+        icon: 'insert_chart',
+        label: 'Relatórios',
+        subLabel: 'Relatórios do sistema',
+        action: '/app/reports',
+        condition: true
+      }, {
+        icon: 'money_off',
+        label: 'Despesas',
+        subLabel: 'Despesas da Barbearia',
+        action: '/app/expenses',
+        condition: true
+      }]
+    }
+  },
+  created () {
+    const vm = this
+    firebase.auth().onAuthStateChanged(({ displayName }) => {
+      if (!displayName) vm.$router.push({ path: '/' })
+      else {
+        db.getUser().then(license => {
+          license.currentUser = license.users[displayName]
+          if (license.currentUser.root) {
+            delete license.users[displayName]
+            vm.setUsers(Object.entries(license.users).map(([key, value]) => {
+              return { username: key, ...value }
+            }))
+          }
+          delete license.users
+          cache.set('user', license)
+          vm.setUser(license)
+          vm.startApplication()
+        }).catch(error => {
+          console.log(error)
+          vm.setUser(cache.get('user'))
+          vm.startApplication()
+        })
       }
     })
   },
@@ -199,7 +211,8 @@ export default {
       'setPayments',
       'setSchedules',
       'setExpenses',
-      'setUser'
+      'setUser',
+      'setUsers'
     ]),
 
     downloadTV () {

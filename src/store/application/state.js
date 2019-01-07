@@ -1,5 +1,6 @@
 export default {
   user: '',
+  users: [],
   clients: [],
   services: [],
   barbers: [],

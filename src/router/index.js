@@ -23,9 +23,15 @@ const Router = new VueRouter({
 
 Router.beforeEach((to, from, next) => {
   const checkUser = localStorage.hasOwnProperty('user')
+  const user = JSON.parse(localStorage.getItem('user'))
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (checkUser) {
-      next()
+      if (to.path === '/app') {
+        if (user.currentUser.root) next()
+        else next({ path: '/app/payments' })
+      } else {
+        next()
+      }
     } else {
       next({ path: '/' })
     }

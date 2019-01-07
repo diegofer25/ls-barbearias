@@ -3,6 +3,10 @@ export default {
     return state.user
   },
 
+  getUsers (state) {
+    return state.users
+  },
+
   getClients (state) {
     return state.clients
   },

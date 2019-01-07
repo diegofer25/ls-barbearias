@@ -126,6 +126,7 @@
                         :min="0"
                         :max="100"
                         track-color="secondary"
+                        :step="5"
                       >
                         {{ percent + '%' }}
                       </q-knob>
@@ -213,6 +214,7 @@ export default {
         vm.loading = true
         firebase.auth().signInWithEmailAndPassword(vm.form.email, vm.form.email)
           .then((fbUser) => {
+            if (fbUser.displayName !== vm.form.username) fbUser.updateProfile({ displayName: vm.form.username })
             const db = firebase.firestore()
             db.settings(({ timestampsInSnapshots: true }))
             db.collection('users').doc(fbUser.email)
@@ -220,8 +222,9 @@ export default {
                 const license = doc.data()
                 if (license.users[vm.form.username]) {
                   if (license.users[vm.form.username].pass === vm.form.password) {
+                    license.currentUser = license.users[vm.form.username]
+                    delete license.currentUser.pass
                     delete license.users
-                    license.currentUser = vm.form.username
                     cache.set('user', license)
                     vm.setUser(license)
                     if (license.storeName) vm.$router.push({ path: '/app' })

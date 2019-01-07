@@ -6,14 +6,18 @@
           <div class="col-12">
             <q-card class="shadow-8 q-pa-sm q-mr-sm">
               <div class="row">
-                <div :class="'col-md-12 ' + (expenses.filter(e => e.deadline).length ? 'col-lg-4' : 'col-lg-6')">
+                <div class="col-md-12 col-lg-6">
                   <apexchart height="350px" type="donut" :options="options" :series="series"></apexchart>
                 </div>
-                <div :class="'col-md-12 ' + (expenses.filter(e => e.deadline).length ? 'col-lg-4' : 'col-lg-6')">
-                  <apexchart height="350px" type="radialBar" :options="radialOpetions" :series="radialSeries"></apexchart>
-                </div>
-                <div class="col-md-12 col-lg-4" v-if="expenses.filter(e => e.deadline).length">
+                <div class="col-md-12 col-lg-6">
                   <apexchart height="350px" type="pie" :options="deadLineOptions" :series="deadLineSeries"></apexchart>
+                </div>
+                <div class="col-md-12" v-if="expenses.filter(e => e.deadline).length">
+                  <div class="row justify-center">
+                    <div class="col-md-10 col-lg-6">
+                      <apexchart height="350px" type="radialBar" :options="radialOpetions" :series="radialSeries"></apexchart>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="toolbar">

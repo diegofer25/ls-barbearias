@@ -100,7 +100,9 @@ module.exports = function (ctx) {
         'QRouteTab',
         'QAutocomplete',
         'QItemTile',
-        'QKnob'
+        'QKnob',
+        'QModalLayout',
+        'QCheckbox'
       ],
       directives: [
         'Ripple',
@@ -121,9 +123,9 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {},
       manifest: {
-        // name: 'Quasar App',
-        // short_name: 'Quasar-PWA',
-        // description: 'Best PWA App in town!',
+        name: 'LS-Barbearias',
+        short_name: 'LS-Barbearias',
+        description: 'Controle e Gestão de Barbearias',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
